@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+#include <memory>
 #include "Audio.h"
 #include "DirectXCommon.h"
 #include "Input.h"
@@ -8,6 +10,7 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include "DebugCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -48,4 +51,22 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
+	
+	// テクスチャハンドル
+	uint32_t textureHandle_ = 0;
+	// サウンドデータハンド
+	uint32_t soundDataHandle_ = 0;
+	// 音声再生ハンドル
+	uint32_t soundPlayHandle_ = 0;
+	// スプライト
+	std::unique_ptr<Sprite> sprite_;
+	// モデル
+	std::unique_ptr<Model> model_;
+	// ワールドトランスフォーム
+	WorldTransform worldTransform_;
+	// ビュープロジェクション
+	ViewProjection viewProjection_;
+	
+	// デバッグカメラ
+	std::unique_ptr<DebugCamera> debugCamera_;
 };
