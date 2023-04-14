@@ -8,6 +8,8 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include "Player.h"
+#include <memory>
 
 /// <summary>
 /// ゲームシーン
@@ -48,4 +50,7 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
+	std::unique_ptr<Player> m_player;
+	ViewProjection m_camera;
+	std::shared_ptr<Model> m_model;
 };
