@@ -1,5 +1,4 @@
 #include "MathUtils.h"
-#include "MathUtils_inline.h"
 #include <cassert>
 
 float Determinant(const Matrix4x4& m)

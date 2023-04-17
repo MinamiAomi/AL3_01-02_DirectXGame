@@ -23,7 +23,6 @@ void GameScene::Initialize() {
 void GameScene::Update() { 
 	m_player->Update();
 
-
 }
 
 void GameScene::Draw() {
