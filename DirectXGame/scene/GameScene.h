@@ -9,6 +9,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "Player.h"
+#include "DebugCamera.h"
 #include <memory>
 
 /// <summary>
@@ -50,8 +51,13 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
+	ViewProjection m_viewProj;
 	std::unique_ptr<Player> m_player;
-	ViewProjection m_camera;
 	std::shared_ptr<Model> m_model;
 
+	#ifdef _DEBUG
+	// デバッグ用
+	std::unique_ptr<DebugCamera> m_debugCamera;
+	bool m_isDebugCameraActive = false;
+	#endif
 };
