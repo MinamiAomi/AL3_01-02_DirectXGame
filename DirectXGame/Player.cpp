@@ -53,9 +53,9 @@ void Player::Update() {
 
 	Copy(m_worldTransform.translation_, imguiPos);
 
+	ImGui::SetNextWindowPos({0, 0}, ImGuiCond_Once);
+	ImGui::SetNextWindowSize({300, 100}, ImGuiCond_Once);
 	ImGui::Begin("Player");
-	ImGui::SetWindowPos({0, 0});
-	ImGui::SetWindowSize({300, 100});
 	ImGui::InputFloat3("Position", imguiPos);
 	ImGui::End();
 }

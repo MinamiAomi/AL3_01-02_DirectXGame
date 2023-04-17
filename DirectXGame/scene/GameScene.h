@@ -55,9 +55,9 @@ private: // メンバ変数
 	std::unique_ptr<Player> m_player;
 	std::shared_ptr<Model> m_model;
 
-	#ifdef _DEBUG
+//#ifdef _DEBUG
 	// デバッグ用
 	std::unique_ptr<DebugCamera> m_debugCamera;
 	bool m_isDebugCameraActive = false;
-	#endif
+//#endif
 };

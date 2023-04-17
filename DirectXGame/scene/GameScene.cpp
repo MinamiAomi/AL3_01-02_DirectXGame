@@ -21,7 +21,7 @@ void GameScene::Initialize() {
 	m_player = std::make_unique<Player>();
 	m_player->Initalize(m_model, TextureManager::Load("ziki.png"));
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	m_debugCamera = std::make_unique<DebugCamera>(
 	    dxCommon_->GetBackBufferWidth(), dxCommon_->GetBackBufferHeight());
 	m_debugCamera;
@@ -29,13 +29,13 @@ void GameScene::Initialize() {
 
 	AxisIndicator::GetInstance()->SetVisible(true);
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&m_viewProj);
-#endif
+//#endif
 }
 
 void GameScene::Update() {
 	m_player->Update();
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	if (input_->TriggerKey(DIK_TAB)) {
 		m_isDebugCameraActive ^= true;
 	}
@@ -45,20 +45,21 @@ void GameScene::Update() {
 		m_viewProj.matProjection = m_debugCamera->GetViewProjection().matProjection;
 		m_viewProj.TransferMatrix();
 
-#pragma region デバッグ用ImGuiウィンドウ
-		ImGui::Begin("Debug");
-		ImGui::SetWindowPos({0, 520});
-		ImGui::SetWindowSize({300, 200});
-		static bool axisVisible = true;
-		ImGui::Checkbox("AxisVisible", &axisVisible);
-		AxisIndicator::GetInstance()->SetVisible(axisVisible);
-		ImGui::End();
-#pragma endregion
-
 	} else {
 		m_viewProj.UpdateMatrix();
 	}
-#endif
+
+	#pragma region デバッグ用ImGuiウィンドウ
+	ImGui::SetNextWindowPos({0, 520},ImGuiCond_Once);
+	ImGui::SetNextWindowSize({300, 200}, ImGuiCond_Once);
+	ImGui::Begin("Debug");
+	ImGui::Checkbox("DebugCamera", &m_isDebugCameraActive);
+	static bool axisVisible = true;
+	ImGui::Checkbox("AxisVisible", &axisVisible);
+	AxisIndicator::GetInstance()->SetVisible(axisVisible);
+	ImGui::End();
+#pragma endregion
+	//#endif
 }
 
 void GameScene::Draw() {
