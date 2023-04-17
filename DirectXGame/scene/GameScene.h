@@ -53,4 +53,5 @@ private: // メンバ変数
 	std::unique_ptr<Player> m_player;
 	ViewProjection m_camera;
 	std::shared_ptr<Model> m_model;
+
 };

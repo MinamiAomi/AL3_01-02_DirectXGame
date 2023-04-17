@@ -10,10 +10,11 @@ void Player::Initalize(std::shared_ptr<Model> model, uint32_t texHandle) {
 }
 
 void Player::Update() { 
+
+
+
+
 	m_worldTransform.TransferMatrix();
-
-
-
 }
 
 void Player::Draw(const ViewProjection& viewProjection) { 
