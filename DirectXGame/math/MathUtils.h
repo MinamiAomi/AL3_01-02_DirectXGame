@@ -72,6 +72,7 @@ Matrix4x4 MakeOrthographicMatrix(
 Matrix4x4 MakeViewportMatrix(
     float left, float top, float width, float height, float minDepth, float maxDepth);
 
+inline Vector3 GetTranslate(const Matrix4x4& m);
 Vector3 Transform(const Vector3& v, const Matrix4x4& m);
 Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
 inline Vector3 operator*(const Vector3& v, const Matrix4x4& m);

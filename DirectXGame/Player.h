@@ -6,6 +6,7 @@
 #include "WorldTransform.h"
 #include "ViewProjection.h"
 #include "PlayerBullet.h"
+#include "MathUtils.h"
 
 
 class Player {
@@ -13,6 +14,8 @@ public:
 	void Initalize(const std::shared_ptr<Model>& model, const std::shared_ptr<Model>& bulletModel, uint32_t texHandle);
 	void Update();
 	void Draw(const ViewProjection& viewProjection);
+
+	inline Vector3 GetWorldPosition() const { return GetTranslate(m_worldTransform.matWorld_); }
 
 private:
 	void Rotate();

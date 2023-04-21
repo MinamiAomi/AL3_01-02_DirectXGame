@@ -1,19 +1,25 @@
 #pragma once
-#include <cstdint>
-#include <memory>
+#include "EnemyBullet.h"
+#include "EnemyStates.h"
 #include "Model.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-#include "EnemyStates.h"
-#include "EnemyBullet.h"
+#include <cstdint>
+#include <memory>
+
+class Player;
 
 class Enemy {
 public:
-	void Initalize(const std::shared_ptr<Model>& model, const std::shared_ptr<Model>& bulletModel, uint32_t texHandle, const Vector3& velocity);
+	void Initalize(
+	    const std::shared_ptr<Player>& player, const std::shared_ptr<Model>& model,
+	    const std::shared_ptr<Model>& bulletModel, uint32_t texHandle);
 	void Update();
 	void Draw(const ViewProjection& viewProjection);
 
-	inline void SetTranslation(const Vector3& translation) { m_worldTransform.translation_ = translation; }
+	inline void SetTranslation(const Vector3& translation) {
+		m_worldTransform.translation_ = translation;
+	}
 	inline const Vector3& GetTranslation() const { return m_worldTransform.translation_; }
 	inline const Vector3& GetVelocity() const { return m_velocity; }
 
@@ -21,6 +27,8 @@ public:
 	void FireBullet();
 
 private:
+	std::shared_ptr<Player> m_player;
+
 	WorldTransform m_worldTransform;
 	Vector3 m_velocity{};
 

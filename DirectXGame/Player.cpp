@@ -1,7 +1,6 @@
 #include "Player.h"
 #include "ImGuiManager.h"
 #include "Input.h"
-#include "MathUtils.h"
 #include <cassert>
 
 void Player::Initalize(

@@ -19,11 +19,11 @@ void GameScene::Initialize() {
 	m_fighter.reset(Model::CreateFromOBJ("fighter"));
 	m_bullet.reset(Model::CreateFromOBJ("bullet"));
 
-	m_player = std::make_unique<Player>();
+	m_player = std::make_shared<Player>();
 	m_player->Initalize(m_fighter, m_bullet, TextureManager::Load("ziki.png"));
 
 	m_enemy = std::make_unique<Enemy>();
-	m_enemy->Initalize(m_fighter, m_bullet, TextureManager::Load("enemy.png"), {0.0f, 0.0f, -0.2f});
+	m_enemy->Initalize(m_player,m_fighter, m_bullet, TextureManager::Load("enemy.png"));
 
 //#ifdef _DEBUG
 	m_debugCamera = std::make_unique<DebugCamera>(
@@ -38,12 +38,7 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 	m_player->Update();
-	
-	if (input_->TriggerKey(DIK_Q)) {
-		m_enemy = std::make_unique<Enemy>();
-		m_enemy->Initalize(m_fighter, m_bullet, TextureManager::Load("enemy.png"), {0.0f, 0.0f, -0.2f});
-	}
-	
+
 	m_enemy->Update();
 
 //#ifdef _DEBUG

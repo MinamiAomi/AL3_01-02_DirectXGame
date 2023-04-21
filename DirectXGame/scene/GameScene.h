@@ -57,7 +57,7 @@ private: // メンバ変数
 	/// ゲームシーン用
 	/// </summary>
 	ViewProjection m_viewProj;
-	std::unique_ptr<Player> m_player;
+	std::shared_ptr<Player> m_player;
 	std::unique_ptr<Enemy> m_enemy;
 
 //#ifdef _DEBUG

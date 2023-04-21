@@ -183,6 +183,8 @@ inline Matrix4x4 MakeTranslateMatrix(const Vector3& trans) {
 	        0.0f, 0.0f, 1.0f, 0.0f, trans.x, trans.y, trans.z, 1.0f};
 }
 
+inline Vector3 GetTranslate(const Matrix4x4& m) { return {m.m[3][0], m.m[3][1], m.m[3][2]}; }
+
 inline Vector3 operator*(const Vector3& v, const Matrix4x4& m) {
 	return {
 	    v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0] + m.m[3][0],
