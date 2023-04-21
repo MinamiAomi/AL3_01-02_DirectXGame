@@ -10,7 +10,7 @@
 
 class Player {
 public:
-	void Initalize(std::shared_ptr<Model> model, std::shared_ptr<Model> bulletModel, uint32_t texHandle);
+	void Initalize(const std::shared_ptr<Model>& model, const std::shared_ptr<Model>& bulletModel, uint32_t texHandle);
 	void Update();
 	void Draw(const ViewProjection& viewProjection);
 

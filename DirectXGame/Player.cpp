@@ -5,7 +5,9 @@
 #include <cassert>
 
 void Player::Initalize(
-    std::shared_ptr<Model> model, std::shared_ptr<Model> bulletModel, uint32_t texHandle) {
+    const std::shared_ptr<Model>& model, 
+	const std::shared_ptr<Model>& bulletModel,
+    uint32_t texHandle) {
 	assert(model);
 	assert(bulletModel);
 

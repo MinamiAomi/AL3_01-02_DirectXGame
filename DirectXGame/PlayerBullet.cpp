@@ -4,7 +4,7 @@
 #include "MathUtils.h"
 #include "ImGuiManager.h"
 
-void PlayerBullet::Initalize(std::shared_ptr<Model> model, const Vector3& position, const Vector3& velocity) {
+void PlayerBullet::Initalize(const std::shared_ptr<Model>& model, const Vector3& position, const Vector3& velocity) {
 	assert(model);
 	m_worldTransform.Initialize();
 	m_worldTransform.translation_ = position;

@@ -3,8 +3,8 @@
 #include <cassert>
 
 void Enemy::Initalize(
-    std::shared_ptr<Model> model, 
-	std::shared_ptr<Model> bulletModel, 
+    const std::shared_ptr<Model>& model, 
+	const std::shared_ptr<Model>& bulletModel, 
 	uint32_t texHandle,
     const Vector3& velocity) {
 	assert(model);
@@ -17,17 +17,17 @@ void Enemy::Initalize(
 	m_velocity = velocity;
 	m_worldTransform.translation_ = {5.0f, 2.0f, 50.0f};
 	m_worldTransform.rotation_ = {0.0f, Math::ToRad(180.0f), 0.0f};
+	m_worldTransform.UpdateMatrix();
 	ChangeState(std::make_unique<EnemyStateApproach>());
 }
 
 void Enemy::Update() {
 	// 弾を削除
 	m_bullets.remove_if([](auto& bullet) { return bullet->IsDead() ? true : false; });
-
+	
 	m_state->Update();
 
 	m_worldTransform.UpdateMatrix();
-
 	// 弾を更新
 	for (auto& bullet : m_bullets) {
 		bullet->Update();

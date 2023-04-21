@@ -1,18 +1,21 @@
 #include "EnemyStates.h"
+#include <cassert>
 #include "Enemy.h"
 #include "MathUtils.h"
 
 void EnemyStateApproach::Initalize(Enemy* owner) { 
+	assert(owner);
 	m_owner = owner;
-	m_fireTimer = kFireInterval; 
+	FireAndReset();
 }
 
 void EnemyStateApproach::Update() {
-	if (--m_fireTimer <= 0) {
-		m_owner->FireBullet();
-		m_fireTimer = kFireInterval;
-	}
+	m_timedCalls.remove_if([](auto& timedCall) { return timedCall->IsFinished() ? true : false; });
 	
+	for (auto& timedCall : m_timedCalls) {
+		timedCall->Update();
+	}
+
 	Vector3 translation = m_owner->GetTranslation();
 	translation += m_owner->GetVelocity();
 	m_owner->SetTranslation(translation);
@@ -21,7 +24,16 @@ void EnemyStateApproach::Update() {
 		m_owner->ChangeState(std::move(newState));
 	}
 }
+
+void EnemyStateApproach::FireAndReset() { 
+	m_owner->FireBullet(); 
+	auto callback = std::bind(&EnemyStateApproach::FireAndReset, this);
+	auto timedCall = std::make_unique<TimedCall>(callback, kFireInterval);
+	m_timedCalls.push_back(std::move(timedCall));
+}
+
 void EnemyStateLeave::Initalize(Enemy* owner) { 
+	assert(owner);
 	m_owner = owner;
 }
 

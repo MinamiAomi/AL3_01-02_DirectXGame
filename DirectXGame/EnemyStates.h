@@ -1,5 +1,8 @@
 #pragma once
 #include <cstdint>
+#include <list>
+#include <memory>
+#include "TimedCall.h"
 
 class Enemy;
 
@@ -11,7 +14,7 @@ public:
 	virtual void Update() = 0;
 
 protected:
-	Enemy* m_owner;
+	Enemy* m_owner = nullptr;
 };
 
 class EnemyStateApproach : public EnemyState {
@@ -23,7 +26,9 @@ public:
 	void Update() override;
 
 private:
-	int32_t m_fireTimer = 0;
+	void FireAndReset();
+
+	std::list<std::unique_ptr<TimedCall>> m_timedCalls;
 };
 
 class EnemyStateLeave : public EnemyState {

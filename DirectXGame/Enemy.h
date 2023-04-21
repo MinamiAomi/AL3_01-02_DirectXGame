@@ -1,15 +1,15 @@
 #pragma once
+#include <cstdint>
+#include <memory>
 #include "Model.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-#include <cstdint>
-#include <memory>
 #include "EnemyStates.h"
 #include "EnemyBullet.h"
 
 class Enemy {
 public:
-	void Initalize(std::shared_ptr<Model> model, std::shared_ptr<Model> bulletModel, uint32_t texHandle, const Vector3& velocity);
+	void Initalize(const std::shared_ptr<Model>& model, const std::shared_ptr<Model>& bulletModel, uint32_t texHandle, const Vector3& velocity);
 	void Update();
 	void Draw(const ViewProjection& viewProjection);
 

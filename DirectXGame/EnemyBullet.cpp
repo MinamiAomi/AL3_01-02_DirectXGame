@@ -5,7 +5,7 @@
 #include "ImGuiManager.h"
 
 void EnemyBullet::Initalize(
-    std::shared_ptr<Model> model, 
+    const std::shared_ptr<Model>& model, 
 	const Vector3& position, 
 	const Vector3& velocity) {
 	assert(model);

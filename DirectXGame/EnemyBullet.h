@@ -9,7 +9,7 @@ class EnemyBullet {
 public:
 	static constexpr int32_t kLifeTime = 60 * 5;
 
-	void Initalize(std::shared_ptr<Model> model, const Vector3& position, const Vector3& velocity);
+	void Initalize(const std::shared_ptr<Model>& model, const Vector3& position, const Vector3& velocity);
 	void Update();
 	void Draw(const ViewProjection& viewProj);
 
