@@ -16,10 +16,13 @@ void GameScene::Initialize() {
 
 	m_viewProj.Initialize();
 
-	m_model.reset(Model::CreateFromOBJ("cube"));
+	m_model.reset(Model::CreateFromOBJ("fighter"));
 
 	m_player = std::make_unique<Player>();
 	m_player->Initalize(m_model, TextureManager::Load("ziki.png"));
+
+	m_enemy = std::make_unique<Enemy>();
+	m_enemy->Initalize(m_model, TextureManager::Load("enemy.png"), {0.0f, 0.0f, -0.2f});
 
 //#ifdef _DEBUG
 	m_debugCamera = std::make_unique<DebugCamera>(
@@ -34,6 +37,13 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 	m_player->Update();
+	
+	if (input_->TriggerKey(DIK_Q)) {
+		m_enemy = std::make_unique<Enemy>();
+		m_enemy->Initalize(m_model, TextureManager::Load("enemy.png"), {0.0f, 0.0f, -0.2f});
+	}
+	
+	m_enemy->Update();
 
 //#ifdef _DEBUG
 	if (input_->TriggerKey(DIK_TAB)) {
@@ -89,6 +99,7 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 	m_player->Draw(m_viewProj);
+	m_enemy->Draw(m_viewProj);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

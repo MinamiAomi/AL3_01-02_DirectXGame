@@ -21,7 +21,7 @@ private:
 	void DebugUI();
 
 	WorldTransform m_worldTransform;
-	std::shared_ptr<Model> m_model = nullptr;
+	std::shared_ptr<Model> m_model;
 	uint32_t m_textureHandle = 0u;
 
 	std::list<std::unique_ptr<PlayerBullet>> m_bullets;

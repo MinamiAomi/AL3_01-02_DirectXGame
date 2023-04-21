@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 
 #include "Audio.h"
 #include "DirectXCommon.h"
@@ -8,9 +9,9 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-#include "Player.h"
 #include "DebugCamera.h"
-#include <memory>
+#include "Player.h"
+#include "Enemy.h"
 
 /// <summary>
 /// ゲームシーン
@@ -52,8 +53,9 @@ private: // メンバ変数
 	/// ゲームシーン用
 	/// </summary>
 	ViewProjection m_viewProj;
-	std::unique_ptr<Player> m_player;
 	std::shared_ptr<Model> m_model;
+	std::unique_ptr<Player> m_player;
+	std::unique_ptr<Enemy> m_enemy;
 
 //#ifdef _DEBUG
 	// デバッグ用
