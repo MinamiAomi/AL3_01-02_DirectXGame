@@ -14,41 +14,30 @@ void Player::Initalize(std::shared_ptr<Model> model, uint32_t texHandle) {
 
 void Player::Update() {
 
+	// 弾を削除
+	m_bullets.remove_if([](auto& bullet) { return bullet->IsDead() ? true : false; });
+
 	// 旋回処理
 	Rotate();
 	// 移動処理
 	Move();
+	m_worldTransform.UpdateMatrix();
+
 	// 攻撃処理
 	Attack();
 
-	if (m_bullet) {
-		m_bullet->Update();
+	for (auto& bullet : m_bullets) {
+		bullet->Update();
 	}
-	
-	m_worldTransform.UpdateMatrix();
 
-	static float imguiPos[3] = {};
-	static float imguiRot[3] = {};
-	Copy(m_worldTransform.translation_, imguiPos);
-	Copy(m_worldTransform.rotation_, imguiRot);
-
-	ImGui::SetNextWindowPos({0, 0}, ImGuiCond_Once);
-	ImGui::SetNextWindowSize({300, 100}, ImGuiCond_Once);
-	ImGui::Begin("Player");
-	ImGui::InputFloat3("Position", imguiPos);
-	ImGui::InputFloat3("Rotate", imguiRot);
-	ImGui::End();
-
-	if (m_bullet) {
-		m_bullet->DebugUI();
-	}
+	DebugUI();
 }
 
 void Player::Draw(const ViewProjection& viewProjection) {
 	m_model->Draw(m_worldTransform, viewProjection, m_textureHandle);
 
-	if (m_bullet) {
-		m_bullet->Draw(viewProjection);
+	for (auto& bullet : m_bullets) {
+		bullet->Draw(viewProjection);
 	}
 }
 
@@ -98,7 +87,39 @@ void Player::Attack() {
 	auto input = Input::GetInstance();
 
 	if (input->TriggerKey(DIK_SPACE)) {
-		m_bullet = std::make_unique<PlayerBullet>();
-		m_bullet->Initalize(m_model, m_worldTransform.translation_);
+		const float kBulletSpeed = 1.0f;
+		Vector3 velocity{0.0f, 0.0f, kBulletSpeed};
+
+		velocity = TransformNormal(velocity, m_worldTransform.matWorld_);
+
+		auto newBullet = std::make_unique<PlayerBullet>();
+		newBullet->Initalize(m_model, m_worldTransform.translation_, velocity);
+
+		m_bullets.push_back(std::move(newBullet));
 	}
+}
+
+void Player::DebugUI() {
+	static float imguiPos[3] = {};
+	static float imguiRot[3] = {};
+	Copy(m_worldTransform.translation_, imguiPos);
+	Copy(m_worldTransform.rotation_, imguiRot);
+
+	ImGui::SetNextWindowPos({0, 0}, ImGuiCond_Once);
+	ImGui::SetNextWindowSize({300, 500}, ImGuiCond_Once);
+	ImGui::Begin("Player");
+	ImGui::InputFloat3("Position", imguiPos);
+	ImGui::InputFloat3("Rotate", imguiRot);
+	if (!m_bullets.empty()) {
+		if (ImGui::TreeNode("Bullets")) {
+			ImGui::BeginChild(ImGui::GetID((void*)0), {250, 100}, ImGuiWindowFlags_NoTitleBar);
+			uint32_t i = 0;
+			for (auto& bullet : m_bullets) {
+				bullet->DebugUI(i++);
+			}
+			ImGui::EndChild();
+			ImGui::TreePop();
+		}
+	}
+	ImGui::End();
 }
