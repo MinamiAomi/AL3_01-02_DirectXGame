@@ -8,14 +8,38 @@ void Enemy::Initalize(std::shared_ptr<Model> model, uint32_t texHandle, const Ve
 	m_texutreHandle = texHandle;
 	m_worldTransform.Initialize();
 	m_velocity = velocity;
-	m_worldTransform.translation_ = {0.0f,1.0f,10.0f};
+	m_worldTransform.translation_ = {0.0f, 1.0f, 10.0f};
+	m_worldTransform.rotation_ = {0.0f, Math::ToRad(180.0f), 0.0f};
 }
 
-void Enemy::Update() { 
-	m_worldTransform.translation_ += m_velocity;
-	m_worldTransform.UpdateMatrix(); 
+void Enemy::Update() {
+	switch (m_phase) {
+	case Phase::Approach:
+	default:
+		ApproachPhase();
+		break;
+	case Phase::Leave:
+		LeavePhase();
+		break;
+	}
+
+	m_worldTransform.UpdateMatrix();
 }
 
 void Enemy::Draw(const ViewProjection& viewProjection) {
 	m_model->Draw(m_worldTransform, viewProjection, m_texutreHandle);
+}
+
+void Enemy::ApproachPhase() {
+	m_worldTransform.translation_ += m_velocity;
+	if (m_worldTransform.translation_.z < 0.0f) {
+		m_phase = Phase::Leave;
+	}
+}
+
+void Enemy::LeavePhase() { 
+	m_worldTransform.translation_ += -m_velocity * 1.0f;
+	if (m_worldTransform.translation_.z > 100.0f) {
+		m_phase = Phase::Approach;
+	}
 }
