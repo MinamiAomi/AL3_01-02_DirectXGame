@@ -17,6 +17,9 @@ public:
 	void Draw(const ViewProjection& viewProjection);
 
 private:
+	// 行動パターン関数テーブル
+	static void (Enemy::*s_phaseFuncTable[])();
+
 	void ApproachPhase();
 	void LeavePhase();
 

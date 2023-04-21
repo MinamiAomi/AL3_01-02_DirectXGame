@@ -2,6 +2,11 @@
 #include "MathUtils.h"
 #include <cassert>
 
+void (Enemy::*Enemy::s_phaseFuncTable[])() = {
+	&Enemy::ApproachPhase,
+	&Enemy::LeavePhase
+};
+
 void Enemy::Initalize(std::shared_ptr<Model> model, uint32_t texHandle, const Vector3& velocity) {
 	assert(model);
 	m_model = model;
@@ -13,15 +18,8 @@ void Enemy::Initalize(std::shared_ptr<Model> model, uint32_t texHandle, const Ve
 }
 
 void Enemy::Update() {
-	switch (m_phase) {
-	case Phase::Approach:
-	default:
-		ApproachPhase();
-		break;
-	case Phase::Leave:
-		LeavePhase();
-		break;
-	}
+	
+	(this->*s_phaseFuncTable[static_cast<size_t>(m_phase)])();
 
 	m_worldTransform.UpdateMatrix();
 }
