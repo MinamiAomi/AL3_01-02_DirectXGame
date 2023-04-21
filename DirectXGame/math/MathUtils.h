@@ -77,6 +77,11 @@ Vector3 Transform(const Vector3& v, const Matrix4x4& m);
 Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
 inline Vector3 operator*(const Vector3& v, const Matrix4x4& m);
 
+inline Vector2 Lerp(float t, const Vector2& s, const Vector2& e);
+inline Vector3 Lerp(float t, const Vector3& s, const Vector3& e);
+Vector2 Slerp(float t, const Vector2& s, const Vector2& e);
+Vector3 Slerp(float t, const Vector3& s, const Vector3& e);
+
 inline void Copy(const Vector2& in, float out[2]);
 inline void Copy(float in[2], Vector2& out);
 inline void Copy(const Vector3& in, float out[3]);

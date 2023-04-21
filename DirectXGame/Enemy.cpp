@@ -1,7 +1,8 @@
 #include "Enemy.h"
+#include <cassert>
 #include "MathUtils.h"
 #include "Player.h"
-#include <cassert>
+#include "ImGuiManager.h"
 
 void Enemy::Initalize(
     const std::shared_ptr<Player>& player, 
@@ -35,6 +36,14 @@ void Enemy::Update() {
 	for (auto& bullet : m_bullets) {
 		bullet->Update();
 	}
+
+	ImGui::SetNextWindowPos({0, 110}, ImGuiCond_Once);
+	ImGui::SetNextWindowSize({300, 100}, ImGuiCond_Once);
+	ImGui::Begin("EnemyBulletConfig");
+	ImGui::SliderFloat("Slerp ratio", &EnemyBullet::slerpRatio, 0.0f, 1.0f);
+	ImGui::End();
+
+
 }
 
 void Enemy::Draw(const ViewProjection& viewProjection) {
@@ -59,7 +68,7 @@ void Enemy::FireBullet() {
 	velocity = Normalize(velocity) * kBulletSpeed;
 
 	auto newBullet = std::make_unique<EnemyBullet>();
-	newBullet->Initalize(m_bulletModel, m_worldTransform.translation_, velocity);
+	newBullet->Initalize(m_player, m_bulletModel, m_worldTransform.translation_, velocity);
 
 	m_bullets.push_back(std::move(newBullet));
 }

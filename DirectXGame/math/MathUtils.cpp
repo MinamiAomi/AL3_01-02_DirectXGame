@@ -277,8 +277,7 @@ Matrix4x4 MakeViewportMatrix(
 	    1.0f};
 }
 
-Vector3 Transform(const Vector3& v, const Matrix4x4& m)
-{
+Vector3 Transform(const Vector3& v, const Matrix4x4& m) {
 	Vector3 result = {};
 	result.x = v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0] + 1.0f * m.m[3][0];
 	result.y = v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1] + 1.0f * m.m[3][1];
@@ -289,9 +288,35 @@ Vector3 Transform(const Vector3& v, const Matrix4x4& m)
 	return result;
 }
 
-Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m) { 
+Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m) {
 	return {
 	    v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0],
 	    v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1],
-	    v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2] };
+	    v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2]};
+}
+
+Vector2 Slerp(float t, const Vector2& s, const Vector2& e) {
+	float dot = Dot(Normalize(s), Normalize(e));
+	if (std::abs(dot) > 0.999f) {
+		return Lerp(t, s, e);
+	}
+	float theta = std::acos(dot);
+	float sinTheta = std::sin(theta);
+	float t1 = std::sin((1.0f - t) * theta) / sinTheta;
+	float t2 = std::sin(t * theta) / sinTheta;
+
+	return t1 * s + t2 * e;
+}
+
+Vector3 Slerp(float t, const Vector3& s, const Vector3& e) {
+	float dot = Dot(Normalize(s), Normalize(e));
+	if (std::abs(dot) > 0.999f) {
+		return Lerp(t, s, e);
+	}
+	float theta = std::acos(dot);
+	float sinTheta = std::sin(theta);
+	float t1 = std::sin((1.0f - t) * theta) / sinTheta;
+	float t2 = std::sin(t * theta) / sinTheta;
+
+	return t1 * s + t2 * e;
 }

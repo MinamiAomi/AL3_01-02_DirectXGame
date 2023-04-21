@@ -110,7 +110,7 @@ void Player::DebugUI() {
 	Copy(m_worldTransform.rotation_, imguiRot);
 
 	ImGui::SetNextWindowPos({0, 0}, ImGuiCond_Once);
-	ImGui::SetNextWindowSize({300, 500}, ImGuiCond_Once);
+	ImGui::SetNextWindowSize({300, 100}, ImGuiCond_Once);
 	ImGui::Begin("Player");
 	ImGui::InputFloat3("Position", imguiPos);
 	ImGui::InputFloat3("Rotate", imguiRot);
