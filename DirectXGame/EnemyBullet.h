@@ -5,7 +5,7 @@
 #include "WorldTransform.h"
 #include "ViewProjection.h"
 
-class PlayerBullet {
+class EnemyBullet {
 public:
 	static constexpr int32_t kLifeTime = 60 * 5;
 
@@ -22,4 +22,5 @@ private:
 	bool m_isDead = false;
 	std::shared_ptr<Model> m_model;
 	uint32_t m_textureHandle = 0u;
+
 };

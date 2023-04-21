@@ -4,10 +4,13 @@
 #include "MathUtils.h"
 #include <cassert>
 
-void Player::Initalize(std::shared_ptr<Model> model, uint32_t texHandle) {
+void Player::Initalize(
+    std::shared_ptr<Model> model, std::shared_ptr<Model> bulletModel, uint32_t texHandle) {
 	assert(model);
+	assert(bulletModel);
 
 	m_model = model;
+	m_bulletModel = bulletModel;
 	m_textureHandle = texHandle;
 	m_worldTransform.Initialize();
 }
@@ -93,7 +96,7 @@ void Player::Attack() {
 		velocity = TransformNormal(velocity, m_worldTransform.matWorld_);
 
 		auto newBullet = std::make_unique<PlayerBullet>();
-		newBullet->Initalize(m_model, m_worldTransform.translation_, velocity);
+		newBullet->Initalize(m_bulletModel, m_worldTransform.translation_, velocity);
 
 		m_bullets.push_back(std::move(newBullet));
 	}
@@ -110,16 +113,5 @@ void Player::DebugUI() {
 	ImGui::Begin("Player");
 	ImGui::InputFloat3("Position", imguiPos);
 	ImGui::InputFloat3("Rotate", imguiRot);
-	if (!m_bullets.empty()) {
-		if (ImGui::TreeNode("Bullets")) {
-			ImGui::BeginChild(ImGui::GetID((void*)0), {250, 100}, ImGuiWindowFlags_NoTitleBar);
-			uint32_t i = 0;
-			for (auto& bullet : m_bullets) {
-				bullet->DebugUI(i++);
-			}
-			ImGui::EndChild();
-			ImGui::TreePop();
-		}
-	}
 	ImGui::End();
 }

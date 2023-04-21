@@ -49,11 +49,14 @@ private: // メンバ変数
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 
+	// リソース
+	std::shared_ptr<Model> m_fighter;
+	std::shared_ptr<Model> m_bullet;
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
 	ViewProjection m_viewProj;
-	std::shared_ptr<Model> m_model;
 	std::unique_ptr<Player> m_player;
 	std::unique_ptr<Enemy> m_enemy;
 

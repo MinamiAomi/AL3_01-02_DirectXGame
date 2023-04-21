@@ -5,10 +5,11 @@
 #include <cstdint>
 #include <memory>
 #include "EnemyStates.h"
+#include "EnemyBullet.h"
 
 class Enemy {
 public:
-	void Initalize(std::shared_ptr<Model> model, uint32_t texHandle, const Vector3& velocity);
+	void Initalize(std::shared_ptr<Model> model, std::shared_ptr<Model> bulletModel, uint32_t texHandle, const Vector3& velocity);
 	void Update();
 	void Draw(const ViewProjection& viewProjection);
 
@@ -17,6 +18,7 @@ public:
 	inline const Vector3& GetVelocity() const { return m_velocity; }
 
 	void ChangeState(std::unique_ptr<EnemyState> state);
+	void FireBullet();
 
 private:
 	WorldTransform m_worldTransform;
@@ -25,5 +27,8 @@ private:
 	std::unique_ptr<EnemyState> m_state;
 
 	std::shared_ptr<Model> m_model;
+	std::shared_ptr<Model> m_bulletModel;
 	uint32_t m_texutreHandle = 0u;
+
+	std::list<std::unique_ptr<EnemyBullet>> m_bullets;
 };

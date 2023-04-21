@@ -1,12 +1,13 @@
 #pragma once
+#include <cstdint>
 
 class Enemy;
 
 // 敵の状態クラスの基底
 class EnemyState {
 public:
-	EnemyState(Enemy* owner) : m_owner(owner) {}
 	virtual ~EnemyState() {}
+	virtual void Initalize(Enemy* owner) = 0;
 	virtual void Update() = 0;
 
 protected:
@@ -15,12 +16,18 @@ protected:
 
 class EnemyStateApproach : public EnemyState {
 public:
-	EnemyStateApproach(Enemy* owner) : EnemyState(owner) {}
-	void Update();
+	// 発射間隔
+	static constexpr int32_t kFireInterval = 20;
+
+	void Initalize(Enemy* owner) override;
+	void Update() override;
+
+private:
+	int32_t m_fireTimer = 0;
 };
 
 class EnemyStateLeave : public EnemyState {
 public:
-	EnemyStateLeave(Enemy* owner) : EnemyState(owner) {}
-	void Update();
+	void Initalize(Enemy* owner) override;
+	void Update() override;
 };
