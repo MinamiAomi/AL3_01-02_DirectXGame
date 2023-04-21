@@ -8,6 +8,7 @@ void PlayerBullet::Initalize(const std::shared_ptr<Model>& model, const Vector3&
 	assert(model);
 	m_worldTransform.Initialize();
 	m_worldTransform.translation_ = position;
+	m_worldTransform.scale_ = {1.0f, 1.0f, 1.5f};
 	m_velocity = velocity;
 
 	m_model = model;
