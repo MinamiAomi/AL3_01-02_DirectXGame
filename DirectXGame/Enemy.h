@@ -1,33 +1,29 @@
 #pragma once
-#include <cstdint>
-#include <memory>
 #include "Model.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include <cstdint>
+#include <memory>
+#include "EnemyStates.h"
 
 class Enemy {
 public:
-	enum class Phase {
-		Approach,	// 接近する
-		Leave		// 離脱する
-	};
-
 	void Initalize(std::shared_ptr<Model> model, uint32_t texHandle, const Vector3& velocity);
 	void Update();
 	void Draw(const ViewProjection& viewProjection);
 
+	inline void SetTranslation(const Vector3& translation) { m_worldTransform.translation_ = translation; }
+	inline const Vector3& GetTranslation() const { return m_worldTransform.translation_; }
+	inline const Vector3& GetVelocity() const { return m_velocity; }
+
+	void ChangeState(std::unique_ptr<EnemyState> state);
+
 private:
-	// 行動パターン関数テーブル
-	static void (Enemy::*s_phaseFuncTable[])();
-
-	void ApproachPhase();
-	void LeavePhase();
-
 	WorldTransform m_worldTransform;
 	Vector3 m_velocity{};
 
-	Phase m_phase = Phase::Approach;	
-	
+	std::unique_ptr<EnemyState> m_state;
+
 	std::shared_ptr<Model> m_model;
 	uint32_t m_texutreHandle = 0u;
 };
