@@ -15,18 +15,22 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 
 
-	m_fighter.reset(Model::CreateFromOBJ("fighter"));
-	m_bullet.reset(Model::CreateFromOBJ("bullet"));
+	m_fighterModel.reset(Model::CreateFromOBJ("fighter"));
+	m_bulletModel.reset(Model::CreateFromOBJ("bullet"));
+	m_skydomeModel.reset(Model::CreateFromOBJ("skydome"));
 
 	m_viewProj.Initialize();
 	
 	m_collisionManager = std::make_unique<CollisionManager>();
 	
 	m_player = std::make_shared<Player>();
-	m_player->Initalize(m_fighter, m_bullet, TextureManager::Load("ziki.png"));
+	m_player->Initalize(m_fighterModel, m_bulletModel, TextureManager::Load("ziki.png"));
 
 	m_enemy = std::make_unique<Enemy>();
-	m_enemy->Initalize(m_player, m_fighter, m_bullet, TextureManager::Load("enemy.png"));
+	m_enemy->Initalize(m_player, m_fighterModel, m_bulletModel, TextureManager::Load("enemy.png"));
+
+	m_skydome = std::make_unique<Skydome>();
+	m_skydome->Initalize(m_skydomeModel);
 
 	// #ifdef _DEBUG
 	m_debugCamera = std::make_unique<DebugCamera>(
@@ -42,8 +46,8 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 	
 	m_player->Update();
-
 	m_enemy->Update();
+	m_skydome->Update();
 
 	// コライダーをクリア
 	m_collisionManager->ClearColliders();
@@ -115,6 +119,7 @@ void GameScene::Draw() {
 	/// </summary>
 	m_player->Draw(m_viewProj);
 	m_enemy->Draw(m_viewProj);
+	m_skydome->Draw(m_viewProj);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

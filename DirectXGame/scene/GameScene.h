@@ -13,6 +13,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "CollisionManager.h"
+#include "Skydome.h"
 
 /// <summary>
 /// ゲームシーン
@@ -51,8 +52,9 @@ private: // メンバ変数
 	Audio* audio_ = nullptr;
 
 	// リソース
-	std::shared_ptr<Model> m_fighter;
-	std::shared_ptr<Model> m_bullet;
+	std::shared_ptr<Model> m_fighterModel;
+	std::shared_ptr<Model> m_bulletModel;
+	std::shared_ptr<Model> m_skydomeModel;
 
 	/// <summary>
 	/// ゲームシーン用
@@ -63,6 +65,7 @@ private: // メンバ変数
 	// オブジェクト
 	std::shared_ptr<Player> m_player;
 	std::unique_ptr<Enemy> m_enemy;
+	std::unique_ptr<Skydome> m_skydome;
 
 //#ifdef _DEBUG
 	// デバッグ用
