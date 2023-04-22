@@ -15,7 +15,10 @@ public:
 	void Update();
 	void Draw(const ViewProjection& viewProjection);
 
+	void OnCollision();
+
 	inline Vector3 GetWorldPosition() const { return GetTranslate(m_worldTransform.matWorld_); }
+	inline const std::list<std::unique_ptr<PlayerBullet>>& GetBullets() { return m_bullets; }
 
 private:
 	void Rotate();

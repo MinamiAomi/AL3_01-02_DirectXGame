@@ -23,9 +23,9 @@ void GameScene::Initialize() {
 	m_player->Initalize(m_fighter, m_bullet, TextureManager::Load("ziki.png"));
 
 	m_enemy = std::make_unique<Enemy>();
-	m_enemy->Initalize(m_player,m_fighter, m_bullet, TextureManager::Load("enemy.png"));
+	m_enemy->Initalize(m_player, m_fighter, m_bullet, TextureManager::Load("enemy.png"));
 
-//#ifdef _DEBUG
+	// #ifdef _DEBUG
 	m_debugCamera = std::make_unique<DebugCamera>(
 	    dxCommon_->GetBackBufferWidth(), dxCommon_->GetBackBufferHeight());
 	m_debugCamera;
@@ -33,7 +33,7 @@ void GameScene::Initialize() {
 
 	AxisIndicator::GetInstance()->SetVisible(true);
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&m_viewProj);
-//#endif
+	// #endif
 }
 
 void GameScene::Update() {
@@ -41,7 +41,9 @@ void GameScene::Update() {
 
 	m_enemy->Update();
 
-//#ifdef _DEBUG
+	CheckAllCollision();
+
+	// #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_TAB)) {
 		m_isDebugCameraActive ^= true;
 	}
@@ -55,8 +57,8 @@ void GameScene::Update() {
 		m_viewProj.UpdateMatrix();
 	}
 
-	#pragma region デバッグ用ImGuiウィンドウ
-	ImGui::SetNextWindowPos({0, 520},ImGuiCond_Once);
+#pragma region デバッグ用ImGuiウィンドウ
+	ImGui::SetNextWindowPos({0, 520}, ImGuiCond_Once);
 	ImGui::SetNextWindowSize({300, 200}, ImGuiCond_Once);
 	ImGui::Begin("Debug");
 	ImGui::Checkbox("DebugCamera", &m_isDebugCameraActive);
@@ -65,7 +67,7 @@ void GameScene::Update() {
 	AxisIndicator::GetInstance()->SetVisible(axisVisible);
 	ImGui::End();
 #pragma endregion
-	//#endif
+	// #endif
 }
 
 void GameScene::Draw() {
@@ -112,5 +114,56 @@ void GameScene::Draw() {
 	// スプライト描画後処理
 	Sprite::PostDraw();
 
+#pragma endregion
+}
+
+void GameScene::CheckAllCollision() {
+	constexpr float kPlayerColliderRadius = 1.0f;
+	constexpr float kEnemyColliderRadius = 1.0f;
+	constexpr float kPlayerBulletColliderRadius = 0.8f;
+	constexpr float kEnemyBulletColliderRadius = 0.8f;
+	
+	Vector3 posA{}, posB{};
+
+	auto& playerBullets = m_player->GetBullets();
+	auto& enemyBullets = m_enemy->GetBullets();
+
+	auto SphereCollision = [&](float radA, float radB) {
+		return LengthSquare(posB - posA) <= (radA + radB) * (radA + radB);
+	};
+
+#pragma region 自キャラと敵弾の当たり判定
+	posA = m_player->GetWorldPosition();
+	for (auto& bullet : enemyBullets) {
+		posB = bullet->GetWorldPosition();
+		if (SphereCollision(kPlayerColliderRadius, kEnemyBulletColliderRadius)) {
+			m_player->OnCollision();
+			bullet->OnCollision();
+		}
+	}
+#pragma endregion
+
+#pragma region 自弾と敵キャラの当たり判定
+	posA = m_enemy->GetWorldPosition();
+	for (auto& bullet : playerBullets) {
+		posB = bullet->GetWorldPosition();
+		if (SphereCollision(kPlayerBulletColliderRadius, kEnemyColliderRadius)) {
+			m_enemy->OnCollision();
+			bullet->OnCollision();
+		}
+	}
+#pragma endregion
+
+#pragma region 自弾と敵弾の当たり判定
+	for (auto& playerBullet : playerBullets) {
+		posA = playerBullet->GetWorldPosition();
+		for (auto& enemyBullet : enemyBullets) {
+			posB = enemyBullet->GetWorldPosition();
+			if (SphereCollision(kPlayerBulletColliderRadius, kEnemyBulletColliderRadius)) {
+				playerBullet->OnCollision();
+				enemyBullet->OnCollision();
+			}
+		}
+	}
 #pragma endregion
 }

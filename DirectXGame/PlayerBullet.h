@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include "ViewProjection.h"
+#include "MathUtils.h"
 
 class PlayerBullet {
 public:
@@ -13,6 +14,9 @@ public:
 	void Update();
 	void Draw(const ViewProjection& viewProj);
 
+	void OnCollision();
+
+	inline Vector3 GetWorldPosition() const { return GetTranslate(m_worldTransform.matWorld_); }
 	inline bool IsDead() const { return m_isDead; }
 
 private:

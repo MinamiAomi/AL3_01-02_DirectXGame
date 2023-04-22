@@ -45,6 +45,8 @@ void Player::Draw(const ViewProjection& viewProjection) {
 	}
 }
 
+void Player::OnCollision() {}
+
 void Player::Rotate() {
 	constexpr float kRotateSpeed = Math::ToRad(1.0f);
 

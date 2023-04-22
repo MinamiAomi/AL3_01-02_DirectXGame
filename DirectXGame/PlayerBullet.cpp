@@ -1,7 +1,6 @@
 #include "PlayerBullet.h"
 #include <cassert>
 #include "TextureManager.h"
-#include "MathUtils.h"
 #include "ImGuiManager.h"
 
 void PlayerBullet::Initalize(const std::shared_ptr<Model>& model, const Vector3& position, const Vector3& velocity) {
@@ -10,6 +9,11 @@ void PlayerBullet::Initalize(const std::shared_ptr<Model>& model, const Vector3&
 	m_worldTransform.translation_ = position;
 	m_worldTransform.scale_ = {1.0f, 1.0f, 1.5f};
 	m_velocity = velocity;
+
+	m_worldTransform.rotation_.y = std::atan2(m_velocity.x, m_velocity.z);
+	float velXZLen = Length(Vector2(m_velocity.x, m_velocity.z));
+	m_worldTransform.rotation_.x = std::atan2(-m_velocity.y, velXZLen);
+	m_worldTransform.UpdateMatrix();
 
 	m_model = model;
 	m_textureHandle = TextureManager::GetInstance()->Load("black.png");
@@ -28,4 +32,6 @@ void PlayerBullet::Update() {
 void PlayerBullet::Draw(const ViewProjection& viewProj) { 
 	m_model->Draw(m_worldTransform, viewProj, m_textureHandle);
 }
+
+void PlayerBullet::OnCollision() { m_isDead = true; }
 

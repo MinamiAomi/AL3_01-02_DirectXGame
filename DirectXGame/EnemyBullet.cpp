@@ -1,7 +1,6 @@
 #include "EnemyBullet.h"
 #include <cassert>
 #include "TextureManager.h"
-#include "MathUtils.h"
 #include "ImGuiManager.h"
 #include "Player.h"
 
@@ -52,4 +51,6 @@ void EnemyBullet::Update() {
 void EnemyBullet::Draw(const ViewProjection& viewProj) {
 	m_model->Draw(m_worldTransform, viewProj, m_textureHandle);
 }
+
+void EnemyBullet::OnCollision() { m_isDead = true; }
 

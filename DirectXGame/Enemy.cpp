@@ -1,6 +1,5 @@
 #include "Enemy.h"
 #include <cassert>
-#include "MathUtils.h"
 #include "Player.h"
 #include "ImGuiManager.h"
 
@@ -53,6 +52,8 @@ void Enemy::Draw(const ViewProjection& viewProjection) {
 		bullet->Draw(viewProjection);
 	}
 }
+
+void Enemy::OnCollision() {}
 
 void Enemy::ChangeState(std::unique_ptr<EnemyState> state) {
 	m_state = std::move(state);

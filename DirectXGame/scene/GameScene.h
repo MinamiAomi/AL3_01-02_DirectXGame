@@ -45,6 +45,11 @@ public: // メンバ関数
 	void Draw();
 
 private: // メンバ変数
+	/// <summary>
+	/// 衝突判定と応答
+	/// </summary>
+	void CheckAllCollision();
+
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;

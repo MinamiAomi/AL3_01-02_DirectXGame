@@ -1,11 +1,12 @@
 #pragma once
+#include <cstdint>
+#include <memory>
 #include "EnemyBullet.h"
 #include "EnemyStates.h"
 #include "Model.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-#include <cstdint>
-#include <memory>
+#include "MathUtils.h"
 
 class Player;
 
@@ -17,11 +18,13 @@ public:
 	void Update();
 	void Draw(const ViewProjection& viewProjection);
 
-	inline void SetTranslation(const Vector3& translation) {
-		m_worldTransform.translation_ = translation;
-	}
+	void OnCollision();
+
+	inline void SetTranslation(const Vector3& translation) { m_worldTransform.translation_ = translation; }
 	inline const Vector3& GetTranslation() const { return m_worldTransform.translation_; }
+	inline Vector3 GetWorldPosition() const { return GetTranslate(m_worldTransform.matWorld_); }
 	inline const Vector3& GetVelocity() const { return m_velocity; }
+	inline const std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return m_bullets; }
 
 	void ChangeState(std::unique_ptr<EnemyState> state);
 	void FireBullet();
