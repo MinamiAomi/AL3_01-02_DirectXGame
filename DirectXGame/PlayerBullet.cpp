@@ -2,6 +2,7 @@
 #include "ImGuiManager.h"
 #include "TextureManager.h"
 #include <cassert>
+#include "CollisionCofig.h"
 
 void PlayerBullet::Initalize(
     const std::shared_ptr<Model>& model, const Vector3& position, const Vector3& velocity) {
@@ -20,6 +21,8 @@ void PlayerBullet::Initalize(
 	m_textureHandle = TextureManager::GetInstance()->Load("black.png");
 
 	SetRadius(0.8f);
+	SetCollisionAttribute(CollisionConfig::kAttributePlayer);
+	SetCollisionMask(~CollisionConfig::kAttributePlayer);
 }
 
 void PlayerBullet::Update() {

@@ -49,7 +49,7 @@ private: // メンバ変数
 	/// <summary>
 	/// 衝突判定と応答
 	/// </summary>
-	void CheckAllCollision();
+	void CheckAllCollisions();
 	void CheckCollisionPair(Collider& colliderA, Collider& colliderB);
 
 	DirectXCommon* dxCommon_ = nullptr;

@@ -3,6 +3,7 @@
 #include "TextureManager.h"
 #include "ImGuiManager.h"
 #include "Player.h"
+#include "CollisionCofig.h"
 
 float EnemyBullet::slerpRatio = 0.1f;
 
@@ -28,6 +29,8 @@ void EnemyBullet::Initalize(
 	m_textureHandle = TextureManager::GetInstance()->Load("red.png");
 
 	SetRadius(0.8f);
+	SetCollisionAttribute(CollisionConfig::kAttributeEnemy);
+	SetCollisionMask(~CollisionConfig::kAttributeEnemy);
 }
 
 void EnemyBullet::Update() {

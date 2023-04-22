@@ -2,6 +2,7 @@
 #include <cassert>
 #include "Player.h"
 #include "ImGuiManager.h"
+#include "CollisionCofig.h"
 
 void Enemy::Initalize(
     const std::shared_ptr<Player>& player, 
@@ -24,6 +25,8 @@ void Enemy::Initalize(
 	ChangeState(std::make_unique<EnemyStateApproach>());
 
 	SetRadius(1.0f);
+	SetCollisionAttribute(CollisionConfig::kAttributeEnemy);
+	SetCollisionMask(~CollisionConfig::kAttributeEnemy);
 }
 
 void Enemy::Update() {

@@ -2,6 +2,7 @@
 #include "ImGuiManager.h"
 #include "Input.h"
 #include <cassert>
+#include "CollisionCofig.h"
 
 void Player::Initalize(
     const std::shared_ptr<Model>& model, 
@@ -16,6 +17,8 @@ void Player::Initalize(
 	m_worldTransform.Initialize();
 
 	SetRadius(1.0f);
+	SetCollisionAttribute(CollisionConfig::kAttributePlayer);
+	SetCollisionMask(~CollisionConfig::kAttributePlayer);
 }
 
 void Player::Update() {

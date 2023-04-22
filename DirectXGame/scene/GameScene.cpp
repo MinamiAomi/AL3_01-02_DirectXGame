@@ -41,7 +41,7 @@ void GameScene::Update() {
 
 	m_enemy->Update();
 
-	CheckAllCollision();
+	CheckAllCollisions();
 
 	// #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_TAB)) {
@@ -117,33 +117,34 @@ void GameScene::Draw() {
 #pragma endregion
 }
 
-void GameScene::CheckAllCollision() {
-	auto& playerBullets = m_player->GetBullets();
-	auto& enemyBullets = m_enemy->GetBullets();
+void GameScene::CheckAllCollisions() { 
+	std::vector<Collider*> colliders;
 
-
-#pragma region 自キャラと敵弾の当たり判定
-	for (auto& bullet : enemyBullets) {
-		CheckCollisionPair(*m_player, *bullet);
+	colliders.push_back(m_player.get());
+	colliders.push_back(m_enemy.get());
+	for (auto& bullet : m_player->GetBullets()) {
+		colliders.push_back(bullet.get());
 	}
-#pragma endregion
-
-#pragma region 自弾と敵キャラの当たり判定
-	for (auto& bullet : playerBullets) {
-		CheckCollisionPair(*m_enemy, *bullet);
+	for (auto& bullet : m_enemy->GetBullets()) {
+		colliders.push_back(bullet.get());
 	}
-#pragma endregion
-
-#pragma region 自弾と敵弾の当たり判定
-	for (auto& playerBullet : playerBullets) {
-		for (auto& enemyBullet : enemyBullets) {
-			CheckCollisionPair(*playerBullet, *enemyBullet);
+	
+	auto itrA = colliders.begin();
+	for (; itrA != colliders.end(); ++itrA) {
+		auto itrB = itrA;
+		++itrB;
+		for (; itrB != colliders.end(); ++itrB) {
+			CheckCollisionPair(*(*itrA), *(*itrB));
 		}
 	}
-#pragma endregion
 }
 
 void GameScene::CheckCollisionPair(Collider& colliderA, Collider& colliderB) {
+	if (!(colliderA.GetCollisionAttribute() & colliderB.GetCollisionMask()) ||
+		!(colliderB.GetCollisionAttribute() & colliderA.GetCollisionMask())) {
+		return;
+	}
+
 	Vector3 posA = colliderA.GetWorldPosition();
 	Vector3 posB = colliderB.GetWorldPosition();
 	float radA = colliderA.GetRadius();
@@ -154,3 +155,27 @@ void GameScene::CheckCollisionPair(Collider& colliderA, Collider& colliderB) {
 		colliderB.OnCollision();
 	}
 }
+
+
+//	auto& playerBullets = m_player->GetBullets();
+//auto& enemyBullets = m_enemy->GetBullets();
+//
+//#pragma region 自キャラと敵弾の当たり判定
+//for (auto& bullet : enemyBullets) {
+//	CheckCollisionPair(*m_player, *bullet);
+//}
+//#pragma endregion
+//
+//#pragma region 自弾と敵キャラの当たり判定
+//for (auto& bullet : playerBullets) {
+//	CheckCollisionPair(*m_enemy, *bullet);
+//}
+//#pragma endregion
+//
+//#pragma region 自弾と敵弾の当たり判定
+//for (auto& playerBullet : playerBullets) {
+//	for (auto& enemyBullet : enemyBullets) {
+//		CheckCollisionPair(*playerBullet, *enemyBullet);
+//	}
+//}
+//#pragma endregion
