@@ -1,4 +1,5 @@
 #pragma once
+#include "Collider.h"
 #include <cstdint>
 #include <memory>
 #include "EnemyBullet.h"
@@ -10,7 +11,7 @@
 
 class Player;
 
-class Enemy {
+class Enemy : public Collider {
 public:
 	void Initalize(
 	    const std::shared_ptr<Player>& player, const std::shared_ptr<Model>& model,
@@ -18,13 +19,15 @@ public:
 	void Update();
 	void Draw(const ViewProjection& viewProjection);
 
-	void OnCollision();
+	void OnCollision() override;
 
 	inline void SetTranslation(const Vector3& translation) { m_worldTransform.translation_ = translation; }
 	inline const Vector3& GetTranslation() const { return m_worldTransform.translation_; }
-	inline Vector3 GetWorldPosition() const { return GetTranslate(m_worldTransform.matWorld_); }
 	inline const Vector3& GetVelocity() const { return m_velocity; }
 	inline const std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return m_bullets; }
+	inline Vector3 GetWorldPosition() const override {
+		return GetTranslate(m_worldTransform.matWorld_);
+	}
 
 	void ChangeState(std::unique_ptr<EnemyState> state);
 	void FireBullet();

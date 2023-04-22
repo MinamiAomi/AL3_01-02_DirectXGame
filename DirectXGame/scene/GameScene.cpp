@@ -118,52 +118,39 @@ void GameScene::Draw() {
 }
 
 void GameScene::CheckAllCollision() {
-	constexpr float kPlayerColliderRadius = 1.0f;
-	constexpr float kEnemyColliderRadius = 1.0f;
-	constexpr float kPlayerBulletColliderRadius = 0.8f;
-	constexpr float kEnemyBulletColliderRadius = 0.8f;
-	
-	Vector3 posA{}, posB{};
-
 	auto& playerBullets = m_player->GetBullets();
 	auto& enemyBullets = m_enemy->GetBullets();
 
-	auto SphereCollision = [&](float radA, float radB) {
-		return LengthSquare(posB - posA) <= (radA + radB) * (radA + radB);
-	};
 
 #pragma region 自キャラと敵弾の当たり判定
-	posA = m_player->GetWorldPosition();
 	for (auto& bullet : enemyBullets) {
-		posB = bullet->GetWorldPosition();
-		if (SphereCollision(kPlayerColliderRadius, kEnemyBulletColliderRadius)) {
-			m_player->OnCollision();
-			bullet->OnCollision();
-		}
+		CheckCollisionPair(*m_player, *bullet);
 	}
 #pragma endregion
 
 #pragma region 自弾と敵キャラの当たり判定
-	posA = m_enemy->GetWorldPosition();
 	for (auto& bullet : playerBullets) {
-		posB = bullet->GetWorldPosition();
-		if (SphereCollision(kPlayerBulletColliderRadius, kEnemyColliderRadius)) {
-			m_enemy->OnCollision();
-			bullet->OnCollision();
-		}
+		CheckCollisionPair(*m_enemy, *bullet);
 	}
 #pragma endregion
 
 #pragma region 自弾と敵弾の当たり判定
 	for (auto& playerBullet : playerBullets) {
-		posA = playerBullet->GetWorldPosition();
 		for (auto& enemyBullet : enemyBullets) {
-			posB = enemyBullet->GetWorldPosition();
-			if (SphereCollision(kPlayerBulletColliderRadius, kEnemyBulletColliderRadius)) {
-				playerBullet->OnCollision();
-				enemyBullet->OnCollision();
-			}
+			CheckCollisionPair(*playerBullet, *enemyBullet);
 		}
 	}
 #pragma endregion
+}
+
+void GameScene::CheckCollisionPair(Collider& colliderA, Collider& colliderB) {
+	Vector3 posA = colliderA.GetWorldPosition();
+	Vector3 posB = colliderB.GetWorldPosition();
+	float radA = colliderA.GetRadius();
+	float radB = colliderB.GetRadius();
+
+	if (LengthSquare(posB - posA) <= (radA + radB) * (radA + radB)) {
+		colliderA.OnCollision();
+		colliderB.OnCollision();
+	}
 }

@@ -14,6 +14,8 @@ void Player::Initalize(
 	m_bulletModel = bulletModel;
 	m_textureHandle = texHandle;
 	m_worldTransform.Initialize();
+
+	SetRadius(1.0f);
 }
 
 void Player::Update() {

@@ -26,6 +26,8 @@ void EnemyBullet::Initalize(
 
 	m_model = model;
 	m_textureHandle = TextureManager::GetInstance()->Load("red.png");
+
+	SetRadius(0.8f);
 }
 
 void EnemyBullet::Update() {
@@ -53,4 +55,3 @@ void EnemyBullet::Draw(const ViewProjection& viewProj) {
 }
 
 void EnemyBullet::OnCollision() { m_isDead = true; }
-

@@ -1,4 +1,5 @@
 #pragma once
+#include "Collider.h"
 #include <cstdint>
 #include <memory>
 #include "Model.h"
@@ -6,7 +7,7 @@
 #include "ViewProjection.h"
 #include "MathUtils.h"
 
-class PlayerBullet {
+class PlayerBullet : public Collider {
 public:
 	static constexpr int32_t kLifeTime = 60 * 5;
 
@@ -14,9 +15,11 @@ public:
 	void Update();
 	void Draw(const ViewProjection& viewProj);
 
-	void OnCollision();
+	void OnCollision() override;
 
-	inline Vector3 GetWorldPosition() const { return GetTranslate(m_worldTransform.matWorld_); }
+	inline Vector3 GetWorldPosition() const override {
+		return GetTranslate(m_worldTransform.matWorld_);
+	}
 	inline bool IsDead() const { return m_isDead; }
 
 private:

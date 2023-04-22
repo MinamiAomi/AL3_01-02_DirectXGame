@@ -22,6 +22,8 @@ void Enemy::Initalize(
 	m_worldTransform.rotation_ = {0.0f, Math::ToRad(180.0f), 0.0f};
 	m_worldTransform.UpdateMatrix();
 	ChangeState(std::make_unique<EnemyStateApproach>());
+
+	SetRadius(1.0f);
 }
 
 void Enemy::Update() {
