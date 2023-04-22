@@ -12,7 +12,7 @@
 #include "DebugCamera.h"
 #include "Player.h"
 #include "Enemy.h"
-#include "Collider.h"
+#include "CollisionManager.h"
 
 /// <summary>
 /// ゲームシーン
@@ -46,12 +46,6 @@ public: // メンバ関数
 	void Draw();
 
 private: // メンバ変数
-	/// <summary>
-	/// 衝突判定と応答
-	/// </summary>
-	void CheckAllCollisions();
-	void CheckCollisionPair(Collider& colliderA, Collider& colliderB);
-
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
@@ -64,6 +58,9 @@ private: // メンバ変数
 	/// ゲームシーン用
 	/// </summary>
 	ViewProjection m_viewProj;
+	std::unique_ptr<CollisionManager> m_collisionManager; 
+
+	// オブジェクト
 	std::shared_ptr<Player> m_player;
 	std::unique_ptr<Enemy> m_enemy;
 

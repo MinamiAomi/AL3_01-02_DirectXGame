@@ -14,11 +14,14 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	m_viewProj.Initialize();
 
 	m_fighter.reset(Model::CreateFromOBJ("fighter"));
 	m_bullet.reset(Model::CreateFromOBJ("bullet"));
 
+	m_viewProj.Initialize();
+	
+	m_collisionManager = std::make_unique<CollisionManager>();
+	
 	m_player = std::make_shared<Player>();
 	m_player->Initalize(m_fighter, m_bullet, TextureManager::Load("ziki.png"));
 
@@ -37,11 +40,25 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+	
 	m_player->Update();
 
 	m_enemy->Update();
 
-	CheckAllCollisions();
+	// コライダーをクリア
+	m_collisionManager->ClearColliders();
+	m_collisionManager->AddCollider(m_player.get());
+	m_collisionManager->AddCollider(m_enemy.get());
+	for (auto& bullet : m_player->GetBullets()) {
+		m_collisionManager->AddCollider(bullet.get());
+	}
+	for (auto& bullet : m_enemy->GetBullets()) {
+		m_collisionManager->AddCollider(bullet.get());
+	}
+	// すべてのコライダーの当たり判定を取る
+	m_collisionManager->CheckAllCollisions();
+	m_collisionManager->ClearColliders();
+
 
 	// #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_TAB)) {
@@ -116,66 +133,3 @@ void GameScene::Draw() {
 
 #pragma endregion
 }
-
-void GameScene::CheckAllCollisions() { 
-	std::vector<Collider*> colliders;
-
-	colliders.push_back(m_player.get());
-	colliders.push_back(m_enemy.get());
-	for (auto& bullet : m_player->GetBullets()) {
-		colliders.push_back(bullet.get());
-	}
-	for (auto& bullet : m_enemy->GetBullets()) {
-		colliders.push_back(bullet.get());
-	}
-	
-	auto itrA = colliders.begin();
-	for (; itrA != colliders.end(); ++itrA) {
-		auto itrB = itrA;
-		++itrB;
-		for (; itrB != colliders.end(); ++itrB) {
-			CheckCollisionPair(*(*itrA), *(*itrB));
-		}
-	}
-}
-
-void GameScene::CheckCollisionPair(Collider& colliderA, Collider& colliderB) {
-	if (!(colliderA.GetCollisionAttribute() & colliderB.GetCollisionMask()) ||
-		!(colliderB.GetCollisionAttribute() & colliderA.GetCollisionMask())) {
-		return;
-	}
-
-	Vector3 posA = colliderA.GetWorldPosition();
-	Vector3 posB = colliderB.GetWorldPosition();
-	float radA = colliderA.GetRadius();
-	float radB = colliderB.GetRadius();
-
-	if (LengthSquare(posB - posA) <= (radA + radB) * (radA + radB)) {
-		colliderA.OnCollision();
-		colliderB.OnCollision();
-	}
-}
-
-
-//	auto& playerBullets = m_player->GetBullets();
-//auto& enemyBullets = m_enemy->GetBullets();
-//
-//#pragma region 自キャラと敵弾の当たり判定
-//for (auto& bullet : enemyBullets) {
-//	CheckCollisionPair(*m_player, *bullet);
-//}
-//#pragma endregion
-//
-//#pragma region 自弾と敵キャラの当たり判定
-//for (auto& bullet : playerBullets) {
-//	CheckCollisionPair(*m_enemy, *bullet);
-//}
-//#pragma endregion
-//
-//#pragma region 自弾と敵弾の当たり判定
-//for (auto& playerBullet : playerBullets) {
-//	for (auto& enemyBullet : enemyBullets) {
-//		CheckCollisionPair(*playerBullet, *enemyBullet);
-//	}
-//}
-//#pragma endregion
