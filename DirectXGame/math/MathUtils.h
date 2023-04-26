@@ -32,6 +32,7 @@ inline float Cross(const Vector2& v1, const Vector2& v2);
 inline float LengthSquare(const Vector2& v);
 inline float Length(const Vector2& v);
 inline Vector2 Normalize(const Vector2& v);
+
 inline Vector3 operator+(const Vector3& v);
 inline Vector3 operator-(const Vector3& v);
 inline Vector3 operator+(const Vector3& v1, const Vector3& v2);
