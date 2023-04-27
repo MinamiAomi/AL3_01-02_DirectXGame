@@ -24,7 +24,7 @@ void Player::Initalize(
 void Player::Update() {
 
 	// 弾を削除
-	m_bullets.remove_if([](auto& bullet) { return bullet->IsDead() ? true : false; });
+	m_bullets.remove_if([](auto& bullet) { return bullet->IsDead(); });
 
 	// 旋回処理
 	Rotate();

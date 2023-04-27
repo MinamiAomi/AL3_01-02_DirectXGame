@@ -10,7 +10,7 @@ void EnemyStateApproach::Initalize(Enemy* owner) {
 }
 
 void EnemyStateApproach::Update() {
-	m_timedCalls.remove_if([](auto& timedCall) { return timedCall->IsFinished() ? true : false; });
+	m_timedCalls.remove_if([](auto& timedCall) { return timedCall->IsFinished(); });
 	
 	for (auto& timedCall : m_timedCalls) {
 		timedCall->Update();
