@@ -19,6 +19,7 @@ public:
 
 	void OnCollision() override;
 
+	inline void SetParent(const WorldTransform* parent) { m_worldTransform.parent_ = parent; }
 	inline Vector3 GetWorldPosition() const override {
 		return GetTranslate(m_worldTransform.matWorld_);
 	}

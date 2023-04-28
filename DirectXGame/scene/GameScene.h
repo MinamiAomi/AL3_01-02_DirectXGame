@@ -14,6 +14,7 @@
 #include "Enemy.h"
 #include "CollisionManager.h"
 #include "Skydome.h"
+#include "RailCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -59,10 +60,11 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-	ViewProjection m_viewProj;
+	const ViewProjection* m_curViewProj = nullptr;
 	std::unique_ptr<CollisionManager> m_collisionManager; 
 
 	// オブジェクト
+	std::unique_ptr<RailCamera> m_railCamera; 
 	std::shared_ptr<Player> m_player;
 	std::unique_ptr<Enemy> m_enemy;
 	std::unique_ptr<Skydome> m_skydome;

@@ -41,7 +41,7 @@ void Enemy::Update() {
 		bullet->Update();
 	}
 
-	ImGui::SetNextWindowPos({0, 110}, ImGuiCond_Once);
+	ImGui::SetNextWindowPos({0, 100}, ImGuiCond_Once);
 	ImGui::SetNextWindowSize({300, 100}, ImGuiCond_Once);
 	ImGui::Begin("EnemyBulletConfig");
 	ImGui::SliderFloat("Slerp ratio", &EnemyBullet::slerpRatio, 0.0f, 1.0f);

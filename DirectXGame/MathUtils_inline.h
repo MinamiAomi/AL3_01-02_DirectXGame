@@ -167,17 +167,32 @@ inline Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
 inline Matrix4x4 MakeRotateXMatrix(float rad) {
 	float s = std::sin(rad);
 	float c = std::cos(rad);
-	return {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, c, s, 0.0f, 0.0f, -s, c, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+	return {
+		1.0f, 0.0f, 0.0f, 0.0f, 
+		0.0f, c, s, 0.0f, 
+		0.0f,-s, c, 0.0f, 
+		0.0f, 0.0f, 0.0f, 1.0f};
 }
 inline Matrix4x4 MakeRotateYMatrix(float rad) {
 	float s = std::sin(rad);
 	float c = std::cos(rad);
-	return {c, 0.0f, -s, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, s, 0.0f, c, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+	return {
+		c, 0.0f, -s, 0.0f, 
+		0.0f, 1.0f, 0.0f, 0.0f, 
+		s, 0.0f, c, 0.0f, 
+		0.0f, 0.0f, 0.0f, 1.0f};
 }
 inline Matrix4x4 MakeRotateZMatrix(float rad) {
 	float s = std::sin(rad);
 	float c = std::cos(rad);
-	return {c, s, 0.0f, 0.0f, -s, c, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+	return {
+		c, s, 0.0f, 0.0f, 
+		-s, c, 0.0f, 0.0f, 
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f};
+}
+inline Matrix4x4 MakeRotateXYZMatrix(const Vector3& rot) { 
+	return MakeRotateXMatrix(rot.x) * MakeRotateZMatrix(rot.y) * MakeRotateZMatrix(rot.z);
 }
 inline Matrix4x4 MakeTranslateMatrix(const Vector3& trans) {
 	return {1.0f, 0.0f, 0.0f, 0.0f, 0.0f,    1.0f,    0.0f,    0.0f,
