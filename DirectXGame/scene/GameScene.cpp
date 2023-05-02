@@ -19,12 +19,14 @@ void GameScene::Initialize() {
 	m_bulletModel.reset(Model::CreateFromOBJ("bullet"));
 	m_skydomeModel.reset(Model::CreateFromOBJ("skydome"));
 
-	m_viewProj.Initialize();
-	
 	m_collisionManager = std::make_unique<CollisionManager>();
 	
+	m_railCamera = std::make_unique<RailCamera>();
+	m_railCamera->Initalize({}, {});
+
 	m_player = std::make_shared<Player>();
 	m_player->Initalize(m_fighterModel, m_bulletModel, TextureManager::Load("ziki.png"));
+	m_player->SetParent(&m_railCamera->GetWorldTransform());
 
 	m_enemy = std::make_unique<Enemy>();
 	m_enemy->Initalize(m_player, m_fighterModel, m_bulletModel, TextureManager::Load("enemy.png"));
@@ -38,13 +40,27 @@ void GameScene::Initialize() {
 	m_debugCamera;
 	m_isDebugCameraActive = false;
 
+	m_curViewProj = &m_railCamera->GetViewProjection();
+
 	AxisIndicator::GetInstance()->SetVisible(true);
-	AxisIndicator::GetInstance()->SetTargetViewProjection(&m_viewProj);
+	AxisIndicator::GetInstance()->SetTargetViewProjection(m_curViewProj);
 	// #endif
 }
 
 void GameScene::Update() {
 	
+	// #ifdef _DEBUG
+	if (input_->TriggerKey(DIK_TAB)) {
+		m_isDebugCameraActive ^= true;
+	}
+	if (m_isDebugCameraActive) {
+		m_debugCamera->Update();
+		m_curViewProj = &m_debugCamera->GetViewProjection();
+	} else {
+		m_railCamera->Update();
+		m_curViewProj = &m_railCamera->GetViewProjection();
+	}
+
 	m_player->Update();
 	m_enemy->Update();
 	m_skydome->Update();
@@ -62,21 +78,6 @@ void GameScene::Update() {
 	// すべてのコライダーの当たり判定を取る
 	m_collisionManager->CheckAllCollisions();
 	m_collisionManager->ClearColliders();
-
-
-	// #ifdef _DEBUG
-	if (input_->TriggerKey(DIK_TAB)) {
-		m_isDebugCameraActive ^= true;
-	}
-	if (m_isDebugCameraActive) {
-		m_debugCamera->Update();
-		m_viewProj.matView = m_debugCamera->GetViewProjection().matView;
-		m_viewProj.matProjection = m_debugCamera->GetViewProjection().matProjection;
-		m_viewProj.TransferMatrix();
-
-	} else {
-		m_viewProj.UpdateMatrix();
-	}
 
 #pragma region デバッグ用ImGuiウィンドウ
 	ImGui::SetNextWindowPos({0, 520}, ImGuiCond_Once);
@@ -117,9 +118,9 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-	m_player->Draw(m_viewProj);
-	m_enemy->Draw(m_viewProj);
-	m_skydome->Draw(m_viewProj);
+	m_player->Draw(*m_curViewProj);
+	m_enemy->Draw(*m_curViewProj);
+	m_skydome->Draw(*m_curViewProj);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

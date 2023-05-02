@@ -32,6 +32,7 @@ inline float Cross(const Vector2& v1, const Vector2& v2);
 inline float LengthSquare(const Vector2& v);
 inline float Length(const Vector2& v);
 inline Vector2 Normalize(const Vector2& v);
+
 inline Vector3 operator+(const Vector3& v);
 inline Vector3 operator-(const Vector3& v);
 inline Vector3 operator+(const Vector3& v1, const Vector3& v2);
@@ -64,6 +65,7 @@ inline Matrix4x4 MakeScaleMatrix(const Vector3& scale);
 inline Matrix4x4 MakeRotateXMatrix(float rad);
 inline Matrix4x4 MakeRotateYMatrix(float rad);
 inline Matrix4x4 MakeRotateZMatrix(float rad);
+inline Matrix4x4 MakeRotateXYZMatrix(const Vector3& rot);
 inline Matrix4x4 MakeTranslateMatrix(const Vector3& trans);
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& trans);
 Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspect, float nearZ, float farZ);
