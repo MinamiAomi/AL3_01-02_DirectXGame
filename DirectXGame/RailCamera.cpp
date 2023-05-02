@@ -23,8 +23,8 @@ void RailCamera::Update() {
 	ImGui::SetNextWindowPos({0, 200}, ImGuiCond_Once);
 	ImGui::SetNextWindowSize({300, 200}, ImGuiCond_Once);
 	ImGui::Begin("RailCamera");
-	ImGui::InputFloat3("Position", &m_worldTransform.translation_.x);
-	ImGui::SliderFloat3("Rotate", &m_worldTransform.rotation_.x, 0.0f, Math::TwoPi);
+	ImGui::DragFloat3("Position", &m_worldTransform.translation_.x, 0.01f);
+	ImGui::DragFloat3("Rotate", &m_worldTransform.rotation_.x, 0.01f, 0.0f, Math::TwoPi);
 	ImGui::End();
 }
 

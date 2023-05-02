@@ -22,7 +22,7 @@ void GameScene::Initialize() {
 	m_collisionManager = std::make_unique<CollisionManager>();
 	
 	m_railCamera = std::make_unique<RailCamera>();
-	m_railCamera->Initalize({}, {});
+	m_railCamera->Initalize({0.0f,0.0f,-50.0f}, {});
 
 	m_player = std::make_shared<Player>();
 	m_player->Initalize(m_fighterModel, m_bulletModel, TextureManager::Load("ziki.png"));

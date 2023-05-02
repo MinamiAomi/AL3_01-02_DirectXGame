@@ -15,6 +15,7 @@ void Player::Initalize(
 	m_bulletModel = bulletModel;
 	m_textureHandle = texHandle;
 	m_worldTransform.Initialize();
+	m_worldTransform.translation_ = {0.0f, 0.0f, 50.0f};
 
 	SetRadius(1.0f);
 	SetCollisionAttribute(CollisionConfig::kAttributePlayer);
@@ -103,8 +104,9 @@ void Player::Attack() {
 
 		velocity = TransformNormal(velocity, m_worldTransform.matWorld_);
 
+		Vector3 bulletInitPos = GetTranslate(m_worldTransform.matWorld_);
 		auto newBullet = std::make_unique<PlayerBullet>();
-		newBullet->Initalize(m_bulletModel, m_worldTransform.translation_, velocity);
+		newBullet->Initalize(m_bulletModel, bulletInitPos, velocity);
 
 		m_bullets.push_back(std::move(newBullet));
 	}
@@ -119,7 +121,7 @@ void Player::DebugUI() {
 	ImGui::SetNextWindowPos({0, 0}, ImGuiCond_Once);
 	ImGui::SetNextWindowSize({300, 100}, ImGuiCond_Once);
 	ImGui::Begin("Player");
-	ImGui::InputFloat3("Position", imguiPos);
-	ImGui::InputFloat3("Rotate", imguiRot);
+	ImGui::DragFloat3("Position", &m_worldTransform.translation_.x,0.01f);
+	ImGui::DragFloat3("Rotate", &m_worldTransform.rotation_.x, 0.01f, 0.0f, Math::TwoPi);
 	ImGui::End();
 }
