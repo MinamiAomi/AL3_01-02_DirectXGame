@@ -15,6 +15,7 @@
 #include "CollisionManager.h"
 #include "Skydome.h"
 #include "RailCamera.h"
+#include "CatmullRomSpline.h"
 
 /// <summary>
 /// ゲームシーン
@@ -73,5 +74,7 @@ private: // メンバ変数
 	// デバッグ用
 	std::unique_ptr<DebugCamera> m_debugCamera;
 	bool m_isDebugCameraActive = false;
-//#endif
+
+	CatmullRomSpline m_catmullRomSpline;
+	//#endif
 };

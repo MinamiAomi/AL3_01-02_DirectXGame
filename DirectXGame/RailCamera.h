@@ -9,6 +9,7 @@ public:
 	void Draw();
 
 	const ViewProjection& GetViewProjection() const { return m_viewProjection; }
+	
 	const WorldTransform& GetWorldTransform() const { return m_worldTransform; }
 
 private:

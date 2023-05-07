@@ -295,6 +295,11 @@ Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m) {
 	    v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2]};
 }
 
+Vector3 GetEulerAngleFromForward(const Vector3& forward) { 
+	Vector3 normForward = Normalize(forward);
+	return Vector3(); 
+}
+
 Vector2 Slerp(float t, const Vector2& s, const Vector2& e) {
 	float dot = Dot(Normalize(s), Normalize(e));
 	if (std::abs(dot) > 0.999f) {

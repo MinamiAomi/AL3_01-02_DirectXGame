@@ -1,5 +1,6 @@
 #include "GameScene.h"
 #include "AxisIndicator.h"
+#include "PrimitiveDrawer.h"
 #include "ImGuiManager.h"
 #include "TextureManager.h"
 #include <cassert>
@@ -44,6 +45,22 @@ void GameScene::Initialize() {
 
 	AxisIndicator::GetInstance()->SetVisible(true);
 	AxisIndicator::GetInstance()->SetTargetViewProjection(m_curViewProj);
+
+	PrimitiveDrawer::GetInstance()->SetViewProjection(m_curViewProj);
+
+	std::vector<Vector3> controlPoints = {
+	    { 0.0f,  0.0f, 0.0f},
+	    {10.0f, 10.0f, 0.0f},
+	    {10.0f, 15.0f, 0.0f},
+	    {20.0f, 15.0f, 0.0f},
+	    {20.0f,  0.0f, 0.0f},
+	    {30.0f,  0.0f, 0.0f},
+    };
+
+	for (const auto& itr : controlPoints) {
+		m_catmullRomSpline.AddControlPoint(itr);
+	}
+	m_catmullRomSpline.SetIsLoop(true);
 	// #endif
 }
 
@@ -126,6 +143,28 @@ void GameScene::Draw() {
 	Model::PostDraw();
 #pragma endregion
 
+	size_t pointCount = 100;
+	std::vector<Vector3> pointDrawing(pointCount);
+	size_t sectionCount = m_catmullRomSpline.GetSectionCount();
+	float t = 0.0f;
+	size_t section = 0;
+	float deltaT = (float)sectionCount / (float)pointCount;
+	for (size_t i = 0; i < pointDrawing.size(); ++i) {
+		pointDrawing[i] = m_catmullRomSpline.ComputePoint(t, section);
+		t += deltaT;
+		if (1.0f < t) {
+			t -= 1.0f;
+			++section;
+		}
+	}	
+
+
+	for (uint32_t i = 0; i < pointCount; ++i) {
+		uint32_t j = (i + 1) % pointCount;
+		PrimitiveDrawer::GetInstance()->DrawLine3d(
+		    pointDrawing[i], pointDrawing[j], {1.0f, 0.0f, 0.0f, 1.0f});
+	}
+	
 #pragma region 前景スプライト描画
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(commandList);

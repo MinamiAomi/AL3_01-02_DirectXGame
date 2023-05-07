@@ -100,19 +100,36 @@ inline Matrix4x4 operator-(const Matrix4x4& m1, const Matrix4x4& m2) {
 }
 inline Matrix4x4 operator*(const Matrix4x4& m1, const Matrix4x4& m2) {
 	return {
-	    m1.m[0][0] * m2.m[0][0] + m1.m[0][1] * m2.m[1][0] + m1.m[0][2] * m2.m[2][0] +
-	        m1.m[0][3] * m2.m[3][0],
-	    m1.m[0][0] * m2.m[0][1] + m1.m[0][1] * m2.m[1][1] + m1.m[0][2] * m2.m[2][1] +
-	        m1.m[0][3] * m2.m[3][1],
-	    m1.m[0][0] * m2.m[0][2] + m1.m[0][1] * m2.m[1][2] + m1.m[0][2] * m2.m[2][2] +
-	        m1.m[0][3] * m2.m[3][2],
-	    m1.m[0][0] * m2.m[0][3] + m1.m[0][1] * m2.m[1][3] + m1.m[0][2] * m2.m[2][3] +
-	        m1.m[0][3] * m2.m[3][3],
+	    m1.m[0][0] * m2.m[0][0] + 
+		m1.m[0][1] * m2.m[1][0] + 
+		m1.m[0][2] * m2.m[2][0] +
+	    m1.m[0][3] * m2.m[3][0],
+	    
+		m1.m[0][0] * m2.m[0][1] + 
+		m1.m[0][1] * m2.m[1][1] + 
+		m1.m[0][2] * m2.m[2][1] +
+	    m1.m[0][3] * m2.m[3][1],
+	    
+		m1.m[0][0] * m2.m[0][2] + 
+		m1.m[0][1] * m2.m[1][2] + 
+		m1.m[0][2] * m2.m[2][2] +
+	    m1.m[0][3] * m2.m[3][2],
+	    
+		m1.m[0][0] * m2.m[0][3] + 
+		m1.m[0][1] * m2.m[1][3] + 
+		m1.m[0][2] * m2.m[2][3] +
+		m1.m[0][3] * m2.m[3][3],
 
-	    m1.m[1][0] * m2.m[0][0] + m1.m[1][1] * m2.m[1][0] + m1.m[1][2] * m2.m[2][0] +
-	        m1.m[1][3] * m2.m[3][0],
-	    m1.m[1][0] * m2.m[0][1] + m1.m[1][1] * m2.m[1][1] + m1.m[1][2] * m2.m[2][1] +
-	        m1.m[1][3] * m2.m[3][1],
+	    m1.m[1][0] * m2.m[0][0] + 
+		m1.m[1][1] * m2.m[1][0] + 
+		m1.m[1][2] * m2.m[2][0] +
+		m1.m[1][3] * m2.m[3][0],
+
+	    m1.m[1][0] * m2.m[0][1] + 
+		m1.m[1][1] * m2.m[1][1] +
+		m1.m[1][2] * m2.m[2][1] +
+		m1.m[1][3] * m2.m[3][1],
+
 	    m1.m[1][0] * m2.m[0][2] + m1.m[1][1] * m2.m[1][2] + m1.m[1][2] * m2.m[2][2] +
 	        m1.m[1][3] * m2.m[3][2],
 	    m1.m[1][0] * m2.m[0][3] + m1.m[1][1] * m2.m[1][3] + m1.m[1][2] * m2.m[2][3] +
@@ -210,6 +227,8 @@ inline Vector3 operator*(const Vector3& v, const Matrix4x4& m) {
 
 inline Vector2 Lerp(float t, const Vector2& s, const Vector2& e) { return s + t * (e - s); }
 inline Vector3 Lerp(float t, const Vector3& s, const Vector3& e) { return s + t * (e - s); }
+
+
 
 inline void Copy(const Vector2& in, float out[2]) { memcpy(out, &in.x, sizeof(float) * 2); }
 inline void Copy(float in[2], Vector2& out) { memcpy(&out.x, in, sizeof(float) * 2); }
