@@ -18,12 +18,13 @@ public:
 	void Draw(const ViewProjection& viewProjection);
 
 	void OnCollision() override;
-
-	inline void SetParent(const WorldTransform* parent) { m_worldTransform.parent_ = parent; }
 	inline Vector3 GetWorldPosition() const override {
 		return GetTranslate(m_worldTransform.matWorld_);
 	}
+
 	inline const std::list<std::unique_ptr<PlayerBullet>>& GetBullets() { return m_bullets; }
+
+	inline void SetParent(const WorldTransform* parent) { m_worldTransform.parent_ = parent; }
 
 private:
 	void Rotate();

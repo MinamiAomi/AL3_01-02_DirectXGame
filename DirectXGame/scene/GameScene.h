@@ -11,7 +11,8 @@
 #include "WorldTransform.h"
 #include "DebugCamera.h"
 #include "Player.h"
-#include "Enemy.h"
+#include "EnemyManager.h"
+#include "EnemyBulletManager.h"
 #include "CollisionManager.h"
 #include "Skydome.h"
 #include "RailCamera.h"
@@ -67,7 +68,8 @@ private: // メンバ変数
 	// オブジェクト
 	std::unique_ptr<RailCamera> m_railCamera; 
 	std::shared_ptr<Player> m_player;
-	std::unique_ptr<Enemy> m_enemy;
+	std::unique_ptr<EnemyManager> m_enemyManager;
+	std::shared_ptr<EnemyBulletManager> m_enemyBulletManager;
 	std::unique_ptr<Skydome> m_skydome;
 
 //#ifdef _DEBUG

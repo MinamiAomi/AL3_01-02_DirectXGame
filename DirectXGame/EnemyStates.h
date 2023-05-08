@@ -20,7 +20,7 @@ protected:
 class EnemyStateApproach : public EnemyState {
 public:
 	// 発射間隔
-	static constexpr int32_t kFireInterval = 20;
+	static constexpr int32_t kFireInterval = 120;
 
 	void Initalize(Enemy* owner) override;
 	void Update() override;

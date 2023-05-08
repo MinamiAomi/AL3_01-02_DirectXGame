@@ -21,16 +21,22 @@ void GameScene::Initialize() {
 	m_skydomeModel.reset(Model::CreateFromOBJ("skydome"));
 
 	m_collisionManager = std::make_unique<CollisionManager>();
-	
+	// レールカメラ
 	m_railCamera = std::make_unique<RailCamera>();
 	m_railCamera->Initalize({0.0f,0.0f,-50.0f}, {});
-
+	// プレイヤー
 	m_player = std::make_shared<Player>();
-	m_player->Initalize(m_fighterModel, m_bulletModel, TextureManager::Load("ziki.png"));
 	m_player->SetParent(&m_railCamera->GetWorldTransform());
-
-	m_enemy = std::make_unique<Enemy>();
-	m_enemy->Initalize(m_player, m_fighterModel, m_bulletModel, TextureManager::Load("enemy.png"));
+	m_player->Initalize(m_fighterModel, m_bulletModel, TextureManager::Load("ziki.png"));
+	// 敵の弾
+	m_enemyBulletManager = std::make_shared<EnemyBulletManager>();
+	m_enemyBulletManager->SetPlayer(m_player);
+	m_enemyBulletManager->Initalize(m_bulletModel);
+	// 敵
+	m_enemyManager = std::make_unique<EnemyManager>();
+	m_enemyManager->SetPlayer(m_player);
+	m_enemyManager->SetBulletManager(m_enemyBulletManager);
+	m_enemyManager->Initalize(m_fighterModel);
 
 	m_skydome = std::make_unique<Skydome>();
 	m_skydome->Initalize(m_skydomeModel);
@@ -79,17 +85,20 @@ void GameScene::Update() {
 	}
 
 	m_player->Update();
-	m_enemy->Update();
+	m_enemyManager->Update();
+	m_enemyBulletManager->Update();
 	m_skydome->Update();
 
 	// コライダーをクリア
 	m_collisionManager->ClearColliders();
 	m_collisionManager->AddCollider(m_player.get());
-	m_collisionManager->AddCollider(m_enemy.get());
+	for (auto& enemy : m_enemyManager->GetEnemys()) {
+		m_collisionManager->AddCollider(enemy.get());	
+	}
 	for (auto& bullet : m_player->GetBullets()) {
 		m_collisionManager->AddCollider(bullet.get());
 	}
-	for (auto& bullet : m_enemy->GetBullets()) {
+	for (auto& bullet : m_enemyBulletManager->GetBullets()) {
 		m_collisionManager->AddCollider(bullet.get());
 	}
 	// すべてのコライダーの当たり判定を取る
@@ -136,7 +145,8 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 	m_player->Draw(*m_curViewProj);
-	m_enemy->Draw(*m_curViewProj);
+	m_enemyManager->Draw(*m_curViewProj);
+	m_enemyBulletManager->Draw(*m_curViewProj);
 	m_skydome->Draw(*m_curViewProj);
 
 	// 3Dオブジェクト描画後処理

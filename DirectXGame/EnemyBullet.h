@@ -16,7 +16,6 @@ public:
 	static float slerpRatio;
 
 	void Initalize(
-	    const std::shared_ptr<Player>& player, const std::shared_ptr<Model>& model,
 	    const Vector3& position, const Vector3& velocity);
 	void Update();
 	void Draw(const ViewProjection& viewProj);
@@ -27,6 +26,10 @@ public:
 		return GetTranslate(m_worldTransform.matWorld_);
 	}
 	inline bool IsDead() const { return m_isDead; }
+
+	void SetPlayer(const std::shared_ptr<Player>& player) { m_player = player; }
+	void SetModel(const std::shared_ptr<Model>& model) { m_model = model; }
+	void SetTextureHandle(uint32_t textureHandle) { m_textureHandle = textureHandle; }
 
 private:
 	std::shared_ptr<Player> m_player;

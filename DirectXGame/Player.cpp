@@ -19,7 +19,7 @@ void Player::Initalize(
 
 	SetRadius(1.0f);
 	SetCollisionAttribute(CollisionConfig::kAttributePlayer);
-	SetCollisionMask(~CollisionConfig::kAttributePlayer);
+	SetCollisionMask(~CollisionConfig::kAttributePlayer || ~CollisionConfig::kAttributeEnemy);
 }
 
 void Player::Update() {
