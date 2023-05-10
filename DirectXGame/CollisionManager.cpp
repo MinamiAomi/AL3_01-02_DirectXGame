@@ -10,7 +10,7 @@ void CollisionManager::CheckAllCollisions() {
 
 			if (!((*itrA)->GetCollisionAttribute() & (*itrB)->GetCollisionMask()) ||
 			    !((*itrB)->GetCollisionAttribute() & (*itrA)->GetCollisionMask())) {
-				return;
+				continue;
 			}
 
 			Vector3 posA = (*itrA)->GetWorldPosition();

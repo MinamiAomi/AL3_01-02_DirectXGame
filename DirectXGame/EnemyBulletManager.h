@@ -13,7 +13,7 @@ public:
 	void Draw(const ViewProjection& viewProjection);
 
 	EnemyBullet& AddBullet();
-	inline const std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return m_bullets; }
+	inline const std::list<std::unique_ptr<EnemyBullet>>& GetBullets() const { return m_bullets; }
 
 	void SetPlayer(const std::shared_ptr<Player>& player) { m_player = player; }
 

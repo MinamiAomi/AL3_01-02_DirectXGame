@@ -1,7 +1,7 @@
 #include "GameScene.h"
 #include "AxisIndicator.h"
-#include "PrimitiveDrawer.h"
 #include "ImGuiManager.h"
+#include "PrimitiveDrawer.h"
 #include "TextureManager.h"
 #include <cassert>
 
@@ -15,7 +15,6 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-
 	m_fighterModel.reset(Model::CreateFromOBJ("fighter"));
 	m_bulletModel.reset(Model::CreateFromOBJ("bullet"));
 	m_skydomeModel.reset(Model::CreateFromOBJ("skydome"));
@@ -23,7 +22,7 @@ void GameScene::Initialize() {
 	m_collisionManager = std::make_unique<CollisionManager>();
 	// レールカメラ
 	m_railCamera = std::make_unique<RailCamera>();
-	m_railCamera->Initalize({0.0f,0.0f,-50.0f}, {});
+	m_railCamera->Initalize({0.0f, 0.0f, -50.0f}, {});
 	// プレイヤー
 	m_player = std::make_shared<Player>();
 	m_player->SetParent(&m_railCamera->GetWorldTransform());
@@ -55,13 +54,13 @@ void GameScene::Initialize() {
 	PrimitiveDrawer::GetInstance()->SetViewProjection(m_curViewProj);
 
 	std::vector<Vector3> controlPoints = {
-	    { 0.0f,  0.0f, 0.0f},
-	    {10.0f, 10.0f, 0.0f},
-	    {10.0f, 15.0f, 0.0f},
+	    {0.0f,  0.0f,  0.0f},
+        {10.0f, 10.0f, 0.0f},
+        {10.0f, 15.0f, 0.0f},
 	    {20.0f, 15.0f, 0.0f},
-	    {20.0f,  0.0f, 0.0f},
-	    {30.0f,  0.0f, 0.0f},
-    };
+        {20.0f, 0.0f,  0.0f},
+        {30.0f, 0.0f,  0.0f},
+	};
 
 	for (const auto& itr : controlPoints) {
 		m_catmullRomSpline.AddControlPoint(itr);
@@ -71,7 +70,7 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-	
+
 	// #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_TAB)) {
 		m_isDebugCameraActive ^= true;
@@ -93,7 +92,7 @@ void GameScene::Update() {
 	m_collisionManager->ClearColliders();
 	m_collisionManager->AddCollider(m_player.get());
 	for (auto& enemy : m_enemyManager->GetEnemys()) {
-		m_collisionManager->AddCollider(enemy.get());	
+		m_collisionManager->AddCollider(enemy.get());
 	}
 	for (auto& bullet : m_player->GetBullets()) {
 		m_collisionManager->AddCollider(bullet.get());
@@ -166,15 +165,14 @@ void GameScene::Draw() {
 			t -= 1.0f;
 			++section;
 		}
-	}	
-
+	}
 
 	for (uint32_t i = 0; i < pointCount; ++i) {
 		uint32_t j = (i + 1) % pointCount;
 		PrimitiveDrawer::GetInstance()->DrawLine3d(
 		    pointDrawing[i], pointDrawing[j], {1.0f, 0.0f, 0.0f, 1.0f});
 	}
-	
+
 #pragma region 前景スプライト描画
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(commandList);

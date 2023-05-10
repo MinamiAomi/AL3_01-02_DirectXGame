@@ -1,17 +1,18 @@
 #pragma once
 #include "Collider.h"
+#include "MathUtils.h"
+#include "Model.h"
+#include "ViewProjection.h"
+#include "WorldTransform.h"
 #include <cstdint>
 #include <memory>
-#include "Model.h"
-#include "WorldTransform.h"
-#include "ViewProjection.h"
-#include "MathUtils.h"
 
 class PlayerBullet : public Collider {
 public:
 	static constexpr int32_t kLifeTime = 60 * 5;
 
-	void Initalize(const std::shared_ptr<Model>& model, const Vector3& position, const Vector3& velocity);
+	void Initalize(
+	    const std::shared_ptr<Model>& model, const Vector3& position, const Vector3& velocity);
 	void Update();
 	void Draw(const ViewProjection& viewProj);
 

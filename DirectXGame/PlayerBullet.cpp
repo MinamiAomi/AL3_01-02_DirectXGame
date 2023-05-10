@@ -1,8 +1,7 @@
 #include "PlayerBullet.h"
-#include "ImGuiManager.h"
+#include "CollisionCofig.h"
 #include "TextureManager.h"
 #include <cassert>
-#include "CollisionCofig.h"
 
 void PlayerBullet::Initalize(
     const std::shared_ptr<Model>& model, const Vector3& position, const Vector3& velocity) {
@@ -40,4 +39,3 @@ void PlayerBullet::Draw(const ViewProjection& viewProj) {
 }
 
 void PlayerBullet::OnCollision() { m_isDead = true; }
-

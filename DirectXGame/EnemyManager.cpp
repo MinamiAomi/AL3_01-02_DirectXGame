@@ -11,7 +11,7 @@ void EnemyManager::Initalize(const std::shared_ptr<Model>& model) {
 }
 
 void EnemyManager::Update() {
-	m_enemys.remove_if([](auto& enemy) { return enemy->IsDead() ? true : false; });
+	m_enemys.remove_if([](auto& enemy) { return enemy->IsDead(); });
 
 	UpdateEnemyPopData();
 

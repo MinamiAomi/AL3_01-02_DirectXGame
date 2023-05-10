@@ -1,14 +1,11 @@
 #include "EnemyBullet.h"
-#include <cassert>
-#include "ImGuiManager.h"
-#include "Player.h"
 #include "CollisionCofig.h"
+#include "Player.h"
+#include <cassert>
 
-float EnemyBullet::slerpRatio = 0.1f;
+float EnemyBullet::slerpRatio = 0.5f;
 
-void EnemyBullet::Initalize(
-	const Vector3& position, 
-	const Vector3& velocity) {
+void EnemyBullet::Initalize(const Vector3& position, const Vector3& velocity) {
 
 	m_velocity = velocity;
 	m_worldTransform.Initialize();
@@ -17,7 +14,7 @@ void EnemyBullet::Initalize(
 
 	m_worldTransform.rotation_.y = std::atan2(m_velocity.x, m_velocity.z);
 	float velXZLen = Length(Vector2(m_velocity.x, m_velocity.z));
-	m_worldTransform.rotation_.x = std::atan2(-m_velocity.y,velXZLen);
+	m_worldTransform.rotation_.x = std::atan2(-m_velocity.y, velXZLen);
 
 	SetRadius(0.8f);
 	SetCollisionAttribute(CollisionConfig::kAttributeEnemy);

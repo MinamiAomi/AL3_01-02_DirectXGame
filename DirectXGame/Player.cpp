@@ -1,12 +1,11 @@
 #include "Player.h"
+#include "CollisionCofig.h"
 #include "ImGuiManager.h"
 #include "Input.h"
 #include <cassert>
-#include "CollisionCofig.h"
 
 void Player::Initalize(
-    const std::shared_ptr<Model>& model, 
-	const std::shared_ptr<Model>& bulletModel,
+    const std::shared_ptr<Model>& model, const std::shared_ptr<Model>& bulletModel,
     uint32_t texHandle) {
 	assert(model);
 	assert(bulletModel);
@@ -19,11 +18,10 @@ void Player::Initalize(
 
 	SetRadius(1.0f);
 	SetCollisionAttribute(CollisionConfig::kAttributePlayer);
-	SetCollisionMask(~CollisionConfig::kAttributePlayer || ~CollisionConfig::kAttributeEnemy);
+	SetCollisionMask(~CollisionConfig::kAttributePlayer);
 }
 
 void Player::Update() {
-
 	// 弾を削除
 	m_bullets.remove_if([](auto& bullet) { return bullet->IsDead(); });
 
@@ -108,7 +106,7 @@ void Player::Attack() {
 		auto newBullet = std::make_unique<PlayerBullet>();
 		newBullet->Initalize(m_bulletModel, bulletInitPos, velocity);
 
-		m_bullets.push_back(std::move(newBullet));
+		m_bullets.emplace_back(std::move(newBullet));
 	}
 }
 
@@ -121,7 +119,7 @@ void Player::DebugUI() {
 	ImGui::SetNextWindowPos({0, 0}, ImGuiCond_Once);
 	ImGui::SetNextWindowSize({300, 100}, ImGuiCond_Once);
 	ImGui::Begin("Player");
-	ImGui::DragFloat3("Position", &m_worldTransform.translation_.x,0.01f);
+	ImGui::DragFloat3("Position", &m_worldTransform.translation_.x, 0.01f);
 	ImGui::DragFloat3("Rotate", &m_worldTransform.rotation_.x, 0.01f, 0.0f, Math::TwoPi);
 	ImGui::End();
 }
