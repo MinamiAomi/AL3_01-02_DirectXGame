@@ -53,36 +53,12 @@ void GameScene::Initialize() {
 
 	PrimitiveDrawer::GetInstance()->SetViewProjection(m_curViewProj);
 
-	std::vector<Vector3> controlPoints = {
-	    {0.0f,  0.0f,  0.0f},
-        {10.0f, 10.0f, 0.0f},
-        {10.0f, 15.0f, 0.0f},
-	    {20.0f, 15.0f, 0.0f},
-        {20.0f, 0.0f,  0.0f},
-        {30.0f, 0.0f,  0.0f},
-	};
-
-	for (const auto& itr : controlPoints) {
-		m_catmullRomSpline.AddControlPoint(itr);
-	}
-	m_catmullRomSpline.SetIsLoop(true);
 	// #endif
 }
 
 void GameScene::Update() {
 
-	// #ifdef _DEBUG
-	if (input_->TriggerKey(DIK_TAB)) {
-		m_isDebugCameraActive ^= true;
-	}
-	if (m_isDebugCameraActive) {
-		m_debugCamera->Update();
-		m_curViewProj = &m_debugCamera->GetViewProjection();
-	} else {
-		m_railCamera->Update();
-		m_curViewProj = &m_railCamera->GetViewProjection();
-	}
-
+	m_railCamera->Update();
 	m_player->Update();
 	m_enemyManager->Update();
 	m_enemyBulletManager->Update();
@@ -103,6 +79,17 @@ void GameScene::Update() {
 	// すべてのコライダーの当たり判定を取る
 	m_collisionManager->CheckAllCollisions();
 	m_collisionManager->ClearColliders();
+
+		// #ifdef _DEBUG
+	if (input_->TriggerKey(DIK_TAB)) {
+		m_isDebugCameraActive ^= true;
+	}
+	if (m_isDebugCameraActive) {
+		m_debugCamera->Update();
+		m_curViewProj = &m_debugCamera->GetViewProjection();
+	} else {
+		m_curViewProj = &m_railCamera->GetViewProjection();
+	}
 
 #pragma region デバッグ用ImGuiウィンドウ
 	ImGui::SetNextWindowPos({0, 520}, ImGuiCond_Once);
@@ -147,31 +134,11 @@ void GameScene::Draw() {
 	m_enemyManager->Draw(*m_curViewProj);
 	m_enemyBulletManager->Draw(*m_curViewProj);
 	m_skydome->Draw(*m_curViewProj);
+	m_railCamera->Draw();
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
-
-	size_t pointCount = 100;
-	std::vector<Vector3> pointDrawing(pointCount);
-	size_t sectionCount = m_catmullRomSpline.GetSectionCount();
-	float t = 0.0f;
-	size_t section = 0;
-	float deltaT = (float)sectionCount / (float)pointCount;
-	for (size_t i = 0; i < pointDrawing.size(); ++i) {
-		pointDrawing[i] = m_catmullRomSpline.ComputePoint(t, section);
-		t += deltaT;
-		if (1.0f < t) {
-			t -= 1.0f;
-			++section;
-		}
-	}
-
-	for (uint32_t i = 0; i < pointCount; ++i) {
-		uint32_t j = (i + 1) % pointCount;
-		PrimitiveDrawer::GetInstance()->DrawLine3d(
-		    pointDrawing[i], pointDrawing[j], {1.0f, 0.0f, 0.0f, 1.0f});
-	}
 
 #pragma region 前景スプライト描画
 	// 前景スプライト描画前処理

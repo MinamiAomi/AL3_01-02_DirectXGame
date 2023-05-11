@@ -76,7 +76,5 @@ private: // メンバ変数
 	// デバッグ用
 	std::unique_ptr<DebugCamera> m_debugCamera;
 	bool m_isDebugCameraActive = false;
-
-	CatmullRomSpline m_catmullRomSpline;
 	//#endif
 };
