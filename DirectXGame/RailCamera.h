@@ -5,7 +5,7 @@
 
 class RailCamera {
 public:
-	static const uint32_t kLoopTime = 1200;
+	static const uint32_t kLoopTime = 1200 * 3;
 
 	void Initalize(const Vector3& pos, const Vector3& rot);
 	void Update();

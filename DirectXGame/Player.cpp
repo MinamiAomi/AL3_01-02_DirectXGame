@@ -7,8 +7,7 @@
 #include <cassert>
 
 void Player::Initalize(
-    const std::shared_ptr<Model>& model, 
-	const std::shared_ptr<Model>& bulletModel,
+    const std::shared_ptr<Model>& model, const std::shared_ptr<Model>& bulletModel,
     uint32_t texHandle) {
 	assert(model);
 	assert(bulletModel);
@@ -104,18 +103,30 @@ void Player::Move() {
 }
 
 void Player::ReticleUpdate(const ViewProjection& viewProjection) {
-	Vector3 offset{0.0f, 0.0f, 1.0f};
-	offset = TransformNormal(offset, m_worldTransform.matWorld_);
-	offset = Normalize(offset) * m_reticleDistance;
-	m_reticlePosition = GetTranslate(m_worldTransform.matWorld_) + offset;
+	
+	// マウスのスクリーン座標を取得
+	POINT mousePos{};
+	GetCursorPos(&mousePos);
+	HWND hwnd = WinApp::GetInstance()->GetHwnd();
+	ScreenToClient(hwnd, &mousePos);
+	Vector2 screenMousePos{static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)};
+	m_sprite2DReticle->SetPosition(screenMousePos);
 
-	Vector3 positionReticle = m_reticlePosition;
+	// マウスをワールド座標に変換するための行列
 	float width = static_cast<float>(WinApp::kWindowWidth);
 	float height = static_cast<float>(WinApp::kWindowHeight);
 	Matrix4x4 viewportMat = MakeViewportMatrix(0.0f, 0.0f, width, height, 0.0f, 1.0f);
 	Matrix4x4 vpvMat = viewProjection.matView * viewProjection.matProjection * viewportMat;
-	positionReticle = Transform(positionReticle, vpvMat);
-	m_sprite2DReticle->SetPosition({positionReticle.x, positionReticle.y});
+	Matrix4x4 vpvMatInv = Inverse(vpvMat);
+	// スクリーン座標系からワールド座標系に変換
+	Vector3 mousePosNear{screenMousePos.x, screenMousePos.y, 0.0f};
+	Vector3 mousePosFar{screenMousePos.x, screenMousePos.y, 1.0f};
+	mousePosNear = Transform(mousePosNear, vpvMatInv);
+	mousePosFar = Transform(mousePosFar, vpvMatInv);
+
+	Vector3 mouseDirection = Normalize(mousePosFar - mousePosNear);
+	m_reticlePosition =
+	    mousePosNear + mouseDirection * (m_reticleDistance + m_worldTransform.translation_.z);
 }
 
 void Player::Attack() {
@@ -123,8 +134,7 @@ void Player::Attack() {
 
 	if (input->TriggerKey(DIK_SPACE)) {
 		const float kBulletSpeed = 2.0f;
-		Vector3 velocity = m_reticlePosition -
-		                   GetTranslate(m_worldTransform.matWorld_);
+		Vector3 velocity = m_reticlePosition - GetTranslate(m_worldTransform.matWorld_);
 		velocity = Normalize(velocity) * kBulletSpeed;
 
 		Vector3 bulletInitPos = GetTranslate(m_worldTransform.matWorld_);
