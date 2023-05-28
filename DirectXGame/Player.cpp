@@ -16,7 +16,7 @@ void Player::Initalize(
 	m_bulletModel = bulletModel;
 	m_textureHandle = texHandle;
 	m_worldTransform.Initialize();
-	m_worldTransform.translation_ = {0.0f, 0.0f, 50.0f};
+	m_worldTransform.translation_ = {0.0f, 0.0f, 0.0f};
 
 	uint32_t texture = TextureManager::Load("Reticle.png");
 	m_sprite2DReticle.reset(Sprite::Create(texture, {}, {1.0f, 1.0f, 1.0f, 0.8f}, {0.5f, 0.5f}));

@@ -29,9 +29,9 @@ void RailCamera::Initalize(const Vector3& pos, const Vector3& rot) {
 
 void RailCamera::Update() {
 
-//	if (++m_moveTime >= kLoopTime) {
-//		m_moveTime = 0;
-//	}
+	if (++m_moveTime >= kLoopTime) {
+		m_moveTime = 0;
+	}
 
 	size_t sectionCount = m_rail.GetSectionCount();
 	uint32_t sectionTime = kLoopTime / static_cast<uint32_t>(sectionCount);
