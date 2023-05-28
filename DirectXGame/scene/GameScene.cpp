@@ -24,7 +24,7 @@ void GameScene::Initialize() {
 	m_collisionManager = std::make_unique<CollisionManager>();
 	// レールカメラ
 	m_railCamera = std::make_unique<RailCamera>();
-	m_railCamera->Initalize({0.0f, 0.0f, 0.0f}, {});
+	m_railCamera->Initalize({0.0f, 0.0f, -50.0f}, {});
 	// プレイヤー
 	m_player = std::make_shared<Player>();
 	m_player->SetParent(&m_railCamera->GetWorldTransform());
