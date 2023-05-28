@@ -2,10 +2,13 @@
 #include "CollisionCofig.h"
 #include "ImGuiManager.h"
 #include "Input.h"
+#include "TextureManager.h"
+#include "WinApp.h"
 #include <cassert>
 
 void Player::Initalize(
-    const std::shared_ptr<Model>& model, const std::shared_ptr<Model>& bulletModel,
+    const std::shared_ptr<Model>& model, 
+	const std::shared_ptr<Model>& bulletModel,
     uint32_t texHandle) {
 	assert(model);
 	assert(bulletModel);
@@ -16,12 +19,15 @@ void Player::Initalize(
 	m_worldTransform.Initialize();
 	m_worldTransform.translation_ = {0.0f, 0.0f, 50.0f};
 
+	uint32_t texture = TextureManager::Load("Reticle.png");
+	m_sprite2DReticle.reset(Sprite::Create(texture, {}, {1.0f, 1.0f, 1.0f, 0.8f}, {0.5f, 0.5f}));
+
 	SetRadius(1.0f);
 	SetCollisionAttribute(CollisionConfig::kAttributePlayer);
 	SetCollisionMask(~CollisionConfig::kAttributePlayer);
 }
 
-void Player::Update() {
+void Player::Update(const ViewProjection& viewProjection) {
 	// 弾を削除
 	m_bullets.remove_if([](auto& bullet) { return bullet->IsDead(); });
 
@@ -30,6 +36,8 @@ void Player::Update() {
 	// 移動処理
 	Move();
 	m_worldTransform.UpdateMatrix();
+
+	ReticleUpdate(viewProjection);
 
 	// 攻撃処理
 	Attack();
@@ -48,6 +56,8 @@ void Player::Draw(const ViewProjection& viewProjection) {
 		bullet->Draw(viewProjection);
 	}
 }
+
+void Player::DrawUI() { m_sprite2DReticle->Draw(); }
 
 void Player::OnCollision() {}
 
@@ -93,14 +103,29 @@ void Player::Move() {
 	    std::clamp(m_worldTransform.translation_.y, -kMoveYLimit, kMoveYLimit);
 }
 
+void Player::ReticleUpdate(const ViewProjection& viewProjection) {
+	Vector3 offset{0.0f, 0.0f, 1.0f};
+	offset = TransformNormal(offset, m_worldTransform.matWorld_);
+	offset = Normalize(offset) * m_reticleDistance;
+	m_reticlePosition = GetTranslate(m_worldTransform.matWorld_) + offset;
+
+	Vector3 positionReticle = m_reticlePosition;
+	float width = static_cast<float>(WinApp::kWindowWidth);
+	float height = static_cast<float>(WinApp::kWindowHeight);
+	Matrix4x4 viewportMat = MakeViewportMatrix(0.0f, 0.0f, width, height, 0.0f, 1.0f);
+	Matrix4x4 vpvMat = viewProjection.matView * viewProjection.matProjection * viewportMat;
+	positionReticle = Transform(positionReticle, vpvMat);
+	m_sprite2DReticle->SetPosition({positionReticle.x, positionReticle.y});
+}
+
 void Player::Attack() {
 	auto input = Input::GetInstance();
 
 	if (input->TriggerKey(DIK_SPACE)) {
-		const float kBulletSpeed = 1.0f;
-		Vector3 velocity{0.0f, 0.0f, kBulletSpeed};
-
-		velocity = TransformNormal(velocity, m_worldTransform.matWorld_);
+		const float kBulletSpeed = 2.0f;
+		Vector3 velocity = m_reticlePosition -
+		                   GetTranslate(m_worldTransform.matWorld_);
+		velocity = Normalize(velocity) * kBulletSpeed;
 
 		Vector3 bulletInitPos = GetTranslate(m_worldTransform.matWorld_);
 		auto newBullet = std::make_unique<PlayerBullet>();
@@ -121,5 +146,6 @@ void Player::DebugUI() {
 	ImGui::Begin("Player");
 	ImGui::DragFloat3("Position", &m_worldTransform.translation_.x, 0.01f);
 	ImGui::DragFloat3("Rotate", &m_worldTransform.rotation_.x, 0.01f, 0.0f, Math::TwoPi);
+	ImGui::DragFloat("ReticleDistance", &m_reticleDistance, 1.0f, 0.0f, 100.0f);
 	ImGui::End();
 }

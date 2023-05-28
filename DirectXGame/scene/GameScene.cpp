@@ -18,6 +18,8 @@ void GameScene::Initialize() {
 	m_fighterModel.reset(Model::CreateFromOBJ("fighter"));
 	m_bulletModel.reset(Model::CreateFromOBJ("bullet"));
 	m_skydomeModel.reset(Model::CreateFromOBJ("skydome"));
+	m_cubeModel.reset(Model::CreateFromOBJ("cube"));
+	TextureManager::Load("Reticle.png");
 
 	m_collisionManager = std::make_unique<CollisionManager>();
 	// レールカメラ
@@ -26,7 +28,8 @@ void GameScene::Initialize() {
 	// プレイヤー
 	m_player = std::make_shared<Player>();
 	m_player->SetParent(&m_railCamera->GetWorldTransform());
-	m_player->Initalize(m_fighterModel, m_bulletModel, TextureManager::Load("ziki.png"));
+	m_player->Initalize(
+	    m_fighterModel, m_bulletModel, TextureManager::Load("ziki.png"));
 	// 敵の弾
 	m_enemyBulletManager = std::make_shared<EnemyBulletManager>();
 	m_enemyBulletManager->SetPlayer(m_player);
@@ -59,7 +62,7 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 
 	m_railCamera->Update();
-	m_player->Update();
+	m_player->Update(*m_curViewProj);
 	m_enemyManager->Update();
 	m_enemyBulletManager->Update();
 	m_skydome->Update();
@@ -80,7 +83,7 @@ void GameScene::Update() {
 	m_collisionManager->CheckAllCollisions();
 	m_collisionManager->ClearColliders();
 
-		// #ifdef _DEBUG
+	// #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_TAB)) {
 		m_isDebugCameraActive ^= true;
 	}
@@ -147,6 +150,8 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+
+	m_player->DrawUI();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

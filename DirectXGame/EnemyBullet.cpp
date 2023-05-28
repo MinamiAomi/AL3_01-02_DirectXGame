@@ -3,7 +3,7 @@
 #include "Player.h"
 #include <cassert>
 
-float EnemyBullet::slerpRatio = 0.5f;
+float EnemyBullet::slerpRatio = 0.04f;
 
 void EnemyBullet::Initalize(const Vector3& position, const Vector3& velocity) {
 

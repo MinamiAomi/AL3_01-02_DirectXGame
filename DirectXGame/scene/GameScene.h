@@ -58,6 +58,7 @@ private: // メンバ変数
 	std::shared_ptr<Model> m_fighterModel;
 	std::shared_ptr<Model> m_bulletModel;
 	std::shared_ptr<Model> m_skydomeModel;
+	std::shared_ptr<Model> m_cubeModel;
 
 	/// <summary>
 	/// ゲームシーン用
