@@ -19,7 +19,9 @@ void Player::Initalize(
 	m_worldTransform.translation_ = {0.0f, 0.0f, 50.0f};
 
 	uint32_t texture = TextureManager::Load("Reticle.png");
-	m_sprite2DReticle.reset(Sprite::Create(texture, {}, {1.0f, 1.0f, 1.0f, 0.8f}, {0.5f, 0.5f}));
+	m_sprite2DReticle.reset(Sprite::Create(texture, {640, 360}, {1.0f, 1.0f, 1.0f, 0.8f}, {0.5f, 0.5f}));
+
+	m_attackCoolTime = kAttackInterval;
 
 	SetRadius(1.0f);
 	SetCollisionAttribute(CollisionConfig::kAttributePlayer);
@@ -29,7 +31,6 @@ void Player::Initalize(
 void Player::Update(const ViewProjection& viewProjection) {
 	// 弾を削除
 	m_bullets.remove_if([](auto& bullet) { return bullet->IsDead(); });
-
 	// 旋回処理
 	Rotate();
 	// 移動処理
@@ -79,18 +80,26 @@ void Player::Move() {
 
 	auto input = Input::GetInstance();
 
-	if (input->PushKey(DIK_LEFT)) {
-		m_worldTransform.translation_.x -= kMoveSpeed;
-	}
-	if (input->PushKey(DIK_RIGHT)) {
-		m_worldTransform.translation_.x += kMoveSpeed;
-	}
+	XINPUT_STATE joyState{};
+	if (input->GetJoystickState(0, joyState)) {
+		Vector3 move{};
+		move.x += (float)joyState.Gamepad.sThumbLX / SHORT_MAX * kMoveSpeed;
+		move.y += (float)joyState.Gamepad.sThumbLY / SHORT_MAX * kMoveSpeed;
+		m_worldTransform.translation_ += move;
+	} else {
+		if (input->PushKey(DIK_LEFT)) {
+			m_worldTransform.translation_.x -= kMoveSpeed;
+		}
+		if (input->PushKey(DIK_RIGHT)) {
+			m_worldTransform.translation_.x += kMoveSpeed;
+		}
 
-	if (input->PushKey(DIK_UP)) {
-		m_worldTransform.translation_.y += kMoveSpeed;
-	}
-	if (input->PushKey(DIK_DOWN)) {
-		m_worldTransform.translation_.y -= kMoveSpeed;
+		if (input->PushKey(DIK_UP)) {
+			m_worldTransform.translation_.y += kMoveSpeed;
+		}
+		if (input->PushKey(DIK_DOWN)) {
+			m_worldTransform.translation_.y -= kMoveSpeed;
+		}
 	}
 
 	const float kMoveXLimit = 34.0f;
@@ -103,14 +112,23 @@ void Player::Move() {
 }
 
 void Player::ReticleUpdate(const ViewProjection& viewProjection) {
-	
-	// マウスのスクリーン座標を取得
-	POINT mousePos{};
-	GetCursorPos(&mousePos);
-	HWND hwnd = WinApp::GetInstance()->GetHwnd();
-	ScreenToClient(hwnd, &mousePos);
-	Vector2 screenMousePos{static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)};
-	m_sprite2DReticle->SetPosition(screenMousePos);
+	auto input = Input::GetInstance();
+
+	Vector2 screenReticlePos = m_sprite2DReticle->GetPosition();
+	XINPUT_STATE joyState{};
+	if (input->GetJoystickState(0, joyState)) {
+		screenReticlePos.x += (float)joyState.Gamepad.sThumbRX / SHORT_MAX * 5.0f;
+		screenReticlePos.y -= (float)joyState.Gamepad.sThumbRY / SHORT_MAX * 5.0f;
+		m_sprite2DReticle->SetPosition(screenReticlePos);
+	} else {
+		// マウスのスクリーン座標を取得
+		POINT mousePos{};
+		GetCursorPos(&mousePos);
+		HWND hwnd = WinApp::GetInstance()->GetHwnd();
+		ScreenToClient(hwnd, &mousePos);
+		screenReticlePos = {static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)};
+		m_sprite2DReticle->SetPosition(screenReticlePos);
+	}
 
 	// マウスをワールド座標に変換するための行列
 	float width = static_cast<float>(WinApp::kWindowWidth);
@@ -119,8 +137,8 @@ void Player::ReticleUpdate(const ViewProjection& viewProjection) {
 	Matrix4x4 vpvMat = viewProjection.matView * viewProjection.matProjection * viewportMat;
 	Matrix4x4 vpvMatInv = Inverse(vpvMat);
 	// スクリーン座標系からワールド座標系に変換
-	Vector3 mousePosNear{screenMousePos.x, screenMousePos.y, 0.0f};
-	Vector3 mousePosFar{screenMousePos.x, screenMousePos.y, 1.0f};
+	Vector3 mousePosNear{screenReticlePos.x, screenReticlePos.y, 0.0f};
+	Vector3 mousePosFar{screenReticlePos.x, screenReticlePos.y, 1.0f};
 	mousePosNear = Transform(mousePosNear, vpvMatInv);
 	mousePosFar = Transform(mousePosFar, vpvMatInv);
 
@@ -132,7 +150,15 @@ void Player::ReticleUpdate(const ViewProjection& viewProjection) {
 void Player::Attack() {
 	auto input = Input::GetInstance();
 
-	if (input->TriggerKey(DIK_SPACE)) {
+	if (m_attackCoolTime > 0) {
+		m_attackCoolTime--;
+		return;
+	}
+
+	XINPUT_STATE joyState{};
+	input->GetJoystickState(0, joyState);
+	
+	if (input->PushKey(DIK_SPACE) || joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 		const float kBulletSpeed = 2.0f;
 		Vector3 velocity = m_reticlePosition - GetTranslate(m_worldTransform.matWorld_);
 		velocity = Normalize(velocity) * kBulletSpeed;
@@ -142,6 +168,7 @@ void Player::Attack() {
 		newBullet->Initalize(m_bulletModel, bulletInitPos, velocity);
 
 		m_bullets.emplace_back(std::move(newBullet));
+		m_attackCoolTime = kAttackInterval;
 	}
 }
 

@@ -12,6 +12,8 @@
 
 class Player : public Collider {
 public:
+	const uint32_t kAttackInterval = 10;
+
 	void Initalize(
 	    const std::shared_ptr<Model>& model, 
 		const std::shared_ptr<Model>& bulletModel,
@@ -46,4 +48,6 @@ private:
 	float m_reticleDistance = 50.0f;
 	Vector3 m_reticlePosition{};
 	std::unique_ptr<Sprite> m_sprite2DReticle;
+
+	uint32_t m_attackCoolTime = 0;
 };
