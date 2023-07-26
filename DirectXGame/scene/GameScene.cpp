@@ -12,18 +12,16 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	m_camera.Initialize();
+	camera_ = std::make_unique<ViewProjection>();
+	camera_->Initialize();
 
-	m_model.reset(Model::CreateFromOBJ("cube"));
+	model_.reset(Model::CreateFromOBJ("cube"));
 
-	m_player = std::make_unique<Player>();
-	m_player->Initalize(m_model, TextureManager::Load("uvChecker.png"));
+	player_ = std::make_unique<Player>();
+	player_->Initalize(model_, TextureManager::Load("uvChecker.png"));
 }
 
-void GameScene::Update() { 
-	m_player->Update();
-
-}
+void GameScene::Update() { player_->Update(); }
 
 void GameScene::Draw() {
 
@@ -51,7 +49,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-	m_player->Draw(m_camera);
+	player_->Draw(*camera_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

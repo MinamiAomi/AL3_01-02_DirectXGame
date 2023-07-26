@@ -50,8 +50,8 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-	std::unique_ptr<Player> m_player;
-	ViewProjection m_camera;
-	std::shared_ptr<Model> m_model;
+	std::unique_ptr<Player> player_;
+	std::unique_ptr<ViewProjection> camera_;
+	std::shared_ptr<Model> model_;
 
 };
